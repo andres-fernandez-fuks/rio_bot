@@ -6,7 +6,7 @@ services:
 variables:
   REGISTRY_URL: registry.gitlab.com/fiuba-memo2/tp2
   APP_NAME: rio-bot
-  KUBE_NAMESPACE_PREFIX: alumnos
+  KUBE_NAMESPACE_PREFIX: docentes
 
 stages:
   - build
