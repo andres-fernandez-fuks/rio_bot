@@ -4,9 +4,9 @@ services:
   - docker:dind
 
 variables:
-  REGISTRY_URL: registry.gitlab.com/fiuba-memo2/ejemplos
-  APP_NAME: telegram-bot-example
-  KUBE_NAMESPACE_PREFIX: docentes
+  REGISTRY_URL: registry.gitlab.com/fiuba-memo2/tp2
+  APP_NAME: rio-bot
+  KUBE_NAMESPACE_PREFIX: alumnos
 
 stages:
   - build
