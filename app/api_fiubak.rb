@@ -7,4 +7,9 @@ class ApiFiubak
 
     @url = url
   end
+
+  def registrar_usuario(id_telegram, email, nombre)
+    body = { id_telegram: id_telegram, email: email, nombre: nombre }.to_json
+    Faraday.post("#{@url}/usuarios", body)
+  end
 end
