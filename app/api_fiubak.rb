@@ -20,4 +20,9 @@ class ApiFiubak
     body = { id_telegram: id_telegram }
     Faraday.get("#{@url}/usuarios", body)
   end
+
+  def esta_registrado?(id_telegram)
+    response = consultar_usuario(id_telegram)
+    response.status == 200
+  end
 end

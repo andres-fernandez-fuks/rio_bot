@@ -3,6 +3,7 @@
 .classpath
 .DS_Store
 .settings
+.byebug_history
 .env
 *.iml
 **/target
