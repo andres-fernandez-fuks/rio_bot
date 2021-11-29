@@ -48,3 +48,10 @@ El log level se especifica en la la configuracion con un número:
 # Más información
 
 Para utilizar otras funcionalidades de Telegram como los Keyboards especiales ver la doc en: https://github.com/atipugin/telegram-bot-ruby
+
+# Correr bot
+
+1. docker-compose up -d
+2. docker exec -it 5_rio_bot_bot_1 /bin/bash
+3. ./start_app.sh para levantar bot (cambiar Telegram Token)
+4. rake para las pruebas
