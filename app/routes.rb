@@ -2,6 +2,7 @@ require "#{File.dirname(__FILE__)}/../lib/routing"
 require "#{File.dirname(__FILE__)}/../lib/version"
 require "#{File.dirname(__FILE__)}/opciones/opciones_usuario_registrado"
 require_relative 'api_fiubak'
+require_relative 'mensajero'
 
 class Routes
   include Routing
