@@ -3,7 +3,10 @@ require 'web_mock'
 # Uncomment to use VCR
 # require 'vcr_helper'
 
+require 'byebug'
 require "#{File.dirname(__FILE__)}/../app/bot_client"
+
+# rubocop:disable Metrics/LineLength
 
 def when_i_send_text(token, message_text)
   body = { "ok": true, "result": [{ "update_id": 693_981_718,
@@ -30,9 +33,9 @@ def when_i_send_keyboard_updates(token, message_text, inline_selection)
                             "text": message_text,
                             "reply_markup": {
                               "inline_keyboard": [
-                                [{ "text": 'Jon Snow', "callback_data": '1' }],
-                                [{ "text": 'Daenerys Targaryen', "callback_data": '2' }],
-                                [{ "text": 'Ned Stark', "callback_data": '3' }]
+                                [{ "text": 'Cómo registrar mi auto', "callback_data": '1' }],
+                                [{ "text": 'Cómo buscar publicaciones', "callback_data": '2' }],
+                                [{ "text": 'Cómo aceptar una oferta', "callback_data": '3' }]
                               ]
                             }
                           },
@@ -69,7 +72,7 @@ def then_i_get_keyboard_message(token, message_text)
   stub_request(:post, "https://api.telegram.org/bot#{token}/sendMessage")
     .with(
       body: { 'chat_id' => '141733544',
-              'reply_markup' => '{"inline_keyboard":[[{"text":"Jon Snow","callback_data":"1"}],[{"text":"Daenerys Targaryen","callback_data":"2"}],[{"text":"Ned Stark","callback_data":"3"}]]}',
+              'reply_markup' => '{"inline_keyboard":[[{"text":"Cómo registrar mi auto","callback_data":"1"}],[{"text":"Cómo buscar publicaciones","callback_data":"2"}],[{"text":"Cómo aceptar una oferta","callback_data":"3"}]]}',
               'text' => message_text }
     )
     .to_return(status: 200, body: body.to_json, headers: {})
@@ -81,6 +84,26 @@ describe 'BotClient' do
 
   before(:each) do
     allow(ApiFiubak).to receive(:new).and_return(api_fiubak)
+  end
+
+  xit 'cuando recibe el mensaje /help y el usuario no está registrado, devuelve el mensaje correspondiente' do
+    token = 'fake_token'
+    when_i_send_text(token, '/help')
+    then_i_get_text(token, 'Para registrarse, ingrese /registro nombre_usuario,mail')
+
+    app = BotClient.new(token)
+
+    app.run_once
+  end
+
+  it 'cuando recibe el mensaje /help y el usuario está registrado, devuelve el mensaje correspondiente' do
+    when_i_send_text('fake_token', '/registro andres,anfernandez@fi.uba.ar')
+    when_i_send_text('fake_token', '/help')
+    then_i_get_keyboard_message('fake_token', '¿Con qué necesita ayuda?')
+
+    app = BotClient.new('fake_token')
+
+    app.run_once
   end
 
   it 'should get a /version message and respond with current version' do
@@ -127,28 +150,6 @@ describe 'BotClient' do
     app.run_once
   end
 
-  it 'should get a /tv message and respond with an inline keyboard' do
-    token = 'fake_token'
-
-    when_i_send_text(token, '/tv')
-    then_i_get_keyboard_message(token, 'Quien se queda con el trono?')
-
-    app = BotClient.new(token)
-
-    app.run_once
-  end
-
-  it 'should get a "Quien se queda con el trono?" message and respond with' do
-    token = 'fake_token'
-
-    when_i_send_keyboard_updates(token, 'Quien se queda con el trono?', 2)
-    then_i_get_text(token, 'A mi también me encantan los dragones!')
-
-    app = BotClient.new(token)
-
-    app.run_once
-  end
-
   it 'should get an unknown message message and respond with Do not understand' do
     token = 'fake_token'
 
@@ -189,3 +190,4 @@ describe 'BotClient' do
     end
   end
 end
+# rubocop:enable Metrics/LineLength

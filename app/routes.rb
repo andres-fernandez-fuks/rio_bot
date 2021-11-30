@@ -1,6 +1,6 @@
 require "#{File.dirname(__FILE__)}/../lib/routing"
 require "#{File.dirname(__FILE__)}/../lib/version"
-require "#{File.dirname(__FILE__)}/tv/series"
+require "#{File.dirname(__FILE__)}/opciones/opciones_usuario_registrado"
 require_relative 'api_fiubak'
 
 class Routes
@@ -30,13 +30,19 @@ class Routes
     bot.api.send_message(chat_id: message.chat.id, text: "La hora es, #{Time.now}")
   end
 
-  on_message '/tv' do |bot, message|
-    kb = Tv::Series.all.map do |tv_serie|
-      Telegram::Bot::Types::InlineKeyboardButton.new(text: tv_serie.name, callback_data: tv_serie.id.to_s)
-    end
-    markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
+  on_message '/help' do |bot, message|
+    id_telegram = message.from.id.to_s
+    usuario_registrado = ApiFiubak.new(ENV['API_URL']).esta_registrado?(id_telegram)
+    if !usuario_registrado
+      bot.api.send_message(chat_id: message.chat.id, text: 'Para registrarse, ingrese /registro nombre_usuario,mail')
+    else
+      boton = Opciones::OpcionUsuarioRegistrado.all.map do |opcion|
+        Telegram::Bot::Types::InlineKeyboardButton.new(text: opcion.nombre, callback_data: opcion.id.to_s)
+      end
+      markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: boton)
 
-    bot.api.send_message(chat_id: message.chat.id, text: 'Quien se queda con el trono?', reply_markup: markup)
+      bot.api.send_message(chat_id: message.chat.id, text: '¿Con qué necesita ayuda?', reply_markup: markup)
+    end
   end
 
   on_message '/busqueda_centro' do |bot, message|
@@ -53,8 +59,8 @@ class Routes
     bot.api.send_message(chat_id: message.chat.id, text: response)
   end
 
-  on_response_to 'Quien se queda con el trono?' do |bot, message|
-    response = Tv::Series.handle_response message.data
+  on_response_to '¿Con qué necesita ayuda?' do |bot, message|
+    response = Opciones::OpcionUsuarioRegistrado.handle_response message.data
     bot.api.send_message(chat_id: message.message.chat.id, text: response)
   end
 

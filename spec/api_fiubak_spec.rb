@@ -24,21 +24,24 @@ describe 'ApiFiubak' do
   end
 
   it 'consultar por un usuario deberia enviar GET a /user con id de telegram, email y nombre' do
-    stub = stub_request(:get, 'http://rio.api.com/usuarios?id_telegram=' + id_telegram)
+    stub = stub_request(:get, 'http://rio.api.com/usuarios/yo')
+           .with(headers: { 'ID_TELEGRAM' => id_telegram })
            .to_return status: 200 | 404
     ApiFiubak.new('http://rio.api.com').consultar_usuario(id_telegram)
     expect(stub).to have_been_requested
   end
 
   it 'consultar si un usuario registrado está registrado debería devolver true' do
-    stub_request(:get, 'http://rio.api.com/usuarios?id_telegram=' + id_telegram)
+    stub_request(:get, 'http://rio.api.com/usuarios/yo')
+      .with(headers: { 'ID_TELEGRAM' => id_telegram })
       .to_return status: 200
     usuario_registrado = ApiFiubak.new('http://rio.api.com').esta_registrado?(id_telegram)
     expect(usuario_registrado).to eq true
   end
 
   it 'consultar si un usuario no registrado está registrado debería devolver false' do
-    stub_request(:get, 'http://rio.api.com/usuarios?id_telegram=' + id_telegram)
+    stub_request(:get, 'http://rio.api.com/usuarios/yo')
+      .with(headers: { 'ID_TELEGRAM' => id_telegram })
       .to_return status: 404
     usuario_registrado = ApiFiubak.new('http://rio.api.com').esta_registrado?(id_telegram)
     expect(usuario_registrado).to eq false
