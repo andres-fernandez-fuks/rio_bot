@@ -15,6 +15,18 @@ class Routes
     bot.api.send_message(chat_id: message.chat.id, text: "Bienvenido #{nombre_usuario}, tu email es #{mail}") if respuesta.status == 201
   end
 
+  on_message_pattern %r{/registrarAuto (?<patente>.*),(?<marca>.*),(?<modelo>.*),(?<anio>.*),(?<precio>.*)} do |bot, message, args|
+    patente = args['patente']
+    marca = args['marca']
+    modelo = args['modelo']
+    anio = args['anio']
+    precio = args['precio']
+    id_telegram = message.from.id
+    respuesta = ApiFiubak.new(ENV['API_URL']).registrar_auto(patente, marca, modelo, anio, precio, id_telegram)
+    id_registro_auto = JSON(respuesta.body).id
+    bot.api.send_message(chat_id: message.chat.id, text: "Gracias por ingresar su auto, lo cotizaremos y le informaremos a la brevedad, el id unico es #{id_registro_auto}") if respuesta.status == 201
+  end
+
   on_message '/help' do |bot, message|
     id_telegram = message.from.id.to_s
     usuario_registrado = ApiFiubak.new(ENV['API_URL']).esta_registrado?(id_telegram)

@@ -45,4 +45,17 @@ describe 'ApiFiubak' do
     usuario_registrado = ApiFiubak.new('http://rio.api.com').esta_registrado?(id_telegram)
     expect(usuario_registrado).to eq false
   end
+
+  marca = 'Fiat'
+  modelo = 'Cronos'
+  anio = 2018
+  precio = 800_000
+  patente = 'AAA123'
+  it 'registrar auto deberia enviar POST a /autos con patente, marca, modelo, anio, precio y id de telegram' do
+    stub = stub_request(:post, 'http://rio.api.com/autos')
+           .with(body: { 'id_telegram': id_telegram, 'patente': patente, 'marca': marca, 'modelo': modelo, 'anio': anio, 'precio': precio }.to_json)
+           .to_return status: 201
+    ApiFiubak.new('http://rio.api.com').registrar_auto(patente, marca, modelo, anio, precio, id_telegram)
+    expect(stub).to have_been_requested
+  end
 end

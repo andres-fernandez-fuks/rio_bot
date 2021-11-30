@@ -14,6 +14,11 @@ class ApiFiubak
     Faraday.post("#{@url}/usuarios", body)
   end
 
+  def registrar_auto(patente, marca, modelo, anio, precio, id_telegram) # rubocop:disable Metrics/ParameterLists
+    body = { id_telegram: id_telegram, patente: patente, marca: marca, modelo: modelo, anio: anio, precio: precio }.to_json
+    Faraday.post("#{@url}/autos", body)
+  end
+
   def consultar_usuario(id_telegram)
     header = { 'ID_TELEGRAM' => id_telegram }
     Faraday.get("#{@url}/usuarios/yo", nil, header)
