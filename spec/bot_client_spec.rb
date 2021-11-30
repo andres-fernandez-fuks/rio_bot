@@ -76,6 +76,13 @@ def then_i_get_keyboard_message(token, message_text)
 end
 
 describe 'BotClient' do
+  let(:api_fiubak) { instance_spy('ApiFiubak') }
+  let(:respuesta_api) { double }
+
+  before(:each) do
+    allow(ApiFiubak).to receive(:new).and_return(api_fiubak)
+  end
+
   it 'should get a /version message and respond with current version' do
     token = 'fake_token'
 
@@ -150,6 +157,20 @@ describe 'BotClient' do
 
     app = BotClient.new(token)
 
+    app.run_once
+  end
+
+  it 'Cuando el bot recibe /registro Fulanito,fulanito@gmail entonces registra un usuario en la API' do # rubocop:disable RSpec/ExampleLength:
+    token = 'fake_token'
+    when_i_send_text(token, '/registro Fulanito,fulanito@gmail.com')
+    stub_request(:post, "https://api.telegram.org/bot#{token}/sendMessage")
+      .to_return(status: 200, body: {}.to_json, headers: {})
+
+    allow(respuesta_api).to receive(:status).and_return(201)
+    allow(api_fiubak).to receive(:registrar_usuario).and_return(respuesta_api)
+    expect(api_fiubak).to receive(:registrar_usuario).once
+
+    app = BotClient.new(token)
     app.run_once
   end
 end

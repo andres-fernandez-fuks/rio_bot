@@ -1,6 +1,7 @@
 require "#{File.dirname(__FILE__)}/../lib/routing"
 require "#{File.dirname(__FILE__)}/../lib/version"
 require "#{File.dirname(__FILE__)}/tv/series"
+require_relative 'api_fiubak'
 
 class Routes
   include Routing
@@ -11,6 +12,13 @@ class Routes
 
   on_message_pattern %r{/say_hi (?<name>.*)} do |bot, message, args|
     bot.api.send_message(chat_id: message.chat.id, text: "Hola, #{args['name']}")
+  end
+
+  on_message_pattern %r{/registro (?<nombre_usuario>.*),(?<mail>.*)} do |_, message, args|
+    nombre_usuario = args['nombre_usuario']
+    mail = args['mail']
+    id_telegram = message.from.id
+    ApiFiubak.new(ENV['API_URL']).registrar_usuario(id_telegram, mail, nombre_usuario)
   end
 
   on_message '/stop' do |bot, message|
