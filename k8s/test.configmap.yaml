@@ -4,4 +4,4 @@ metadata:
   name: botconfig
 data:
   LOG_LEVEL: "debug"
-  API_URL: "https://rio-api-test.herokuapp.com/"
+  API_URL: "https://rio-api-test.herokuapp.com"
