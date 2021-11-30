@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'web_mock'
 require "#{File.dirname(__FILE__)}/../app/api_fiubak"
 
 describe 'ApiFiubak' do

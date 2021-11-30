@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'web_mock'
+require 'webmock/rspec'
 # Uncomment to use VCR
 # require 'vcr_helper'
 
