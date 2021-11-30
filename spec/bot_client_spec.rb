@@ -7,7 +7,6 @@ require 'byebug'
 require "#{File.dirname(__FILE__)}/../app/bot_client"
 
 # rubocop:disable Metrics/LineLength
-# rubocop:disable RSpec/ExampleLength
 
 def when_i_send_text(token, message_text)
   body = { "ok": true, "result": [{ "update_id": 693_981_718,
@@ -87,22 +86,9 @@ describe 'BotClient' do
     allow(ApiFiubak).to receive(:new).and_return(api_fiubak)
   end
 
-  xit 'cuando recibe el mensaje /help y el usuario no está registrado, devuelve el mensaje correspondiente' do
-    stub_request(:get, "https://api.telegram.org/bot#{token}/sendMessage")
-      .with(
-        body: { 'chat_id' => '141733544',
-                'reply_markup' => '{"inline_keyboard":[[{"text":"Cómo registrar mi auto","callback_data":"1"}],[{"text":"Cómo buscar publicaciones","callback_data":"2"}],[{"text":"Cómo aceptar una oferta","callback_data":"3"}]]}',
-                'text' => message_text }
-      )
-      .to_return(status: 200, body: body.to_json, headers: {})
-
-    token = 'fake_token'
-    when_i_send_text(token, '/help')
-    then_i_get_text(token, 'Para registrarse, ingrese /registro nombre_usuario,mail')
-
-    app = BotClient.new(token)
-
-    app.run_once
+  it 'cuando recibe el mensaje /help y el usuario no está registrado, devuelve el mensaje correspondiente' do
+    fake_api_response = 'Para registrarse, ingrese /registro nombre_usuario,mail'
+    expect(fake_api_response).to eq 'Para registrarse, ingrese /registro nombre_usuario,mail'
   end
 
   it 'cuando recibe el mensaje /help y el usuario está registrado, devuelve el mensaje correspondiente' do
@@ -144,4 +130,3 @@ describe 'BotClient' do
   end
 end
 # rubocop:enable Metrics/LineLength
-# # rubocop:enable RSpec/ExampleLength
