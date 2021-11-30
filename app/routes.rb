@@ -14,11 +14,12 @@ class Routes
     bot.api.send_message(chat_id: message.chat.id, text: "Hola, #{args['name']}")
   end
 
-  on_message_pattern %r{/registro (?<nombre_usuario>.*),(?<mail>.*)} do |_, message, args|
+  on_message_pattern %r{/registro (?<nombre_usuario>.*),(?<mail>.*)} do |bot, message, args|
     nombre_usuario = args['nombre_usuario']
     mail = args['mail']
     id_telegram = message.from.id
-    ApiFiubak.new(ENV['API_URL']).registrar_usuario(id_telegram, mail, nombre_usuario)
+    respuesta = ApiFiubak.new(ENV['API_URL']).registrar_usuario(id_telegram, mail, nombre_usuario)
+    bot.api.send_message(chat_id: message.chat.id, text: "Bienvenido #{nombre_usuario}, tu email es #{mail}") if respuesta.status == 201
   end
 
   on_message '/stop' do |bot, message|

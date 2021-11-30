@@ -160,17 +160,32 @@ describe 'BotClient' do
     app.run_once
   end
 
-  it 'Cuando el bot recibe /registro Fulanito,fulanito@gmail entonces registra un usuario en la API' do # rubocop:disable RSpec/ExampleLength:
-    token = 'fake_token'
-    when_i_send_text(token, '/registro Fulanito,fulanito@gmail.com')
-    stub_request(:post, "https://api.telegram.org/bot#{token}/sendMessage")
-      .to_return(status: 200, body: {}.to_json, headers: {})
+  context 'Cuando el bot recibe /registro Fulanito,fulanito@gmail' do # rubocop:disable RSpec/ContextWording:
+    let(:token) { 'fake_token' }
 
-    allow(respuesta_api).to receive(:status).and_return(201)
-    allow(api_fiubak).to receive(:registrar_usuario).and_return(respuesta_api)
-    expect(api_fiubak).to receive(:registrar_usuario).once
+    before(:each) do
+      when_i_send_text(token, '/registro Fulanito,fulanito@gmail.com')
+      allow(respuesta_api).to receive(:status).and_return(201)
+      allow(api_fiubak).to receive(:registrar_usuario).and_return(respuesta_api)
+    end
 
-    app = BotClient.new(token)
-    app.run_once
+    it 'Entonces registra un usuario en la API' do
+      stub_request(:post, "https://api.telegram.org/bot#{token}/sendMessage")
+        .to_return(status: 200, body: {}.to_json, headers: {})
+
+      expect(api_fiubak).to receive(:registrar_usuario).once
+
+      app = BotClient.new(token)
+      app.run_once
+    end
+
+    it 'Entonces devuelve mensaje de bienvenida' do
+      stub_req = then_i_get_text(token, 'Bienvenido Fulanito, tu email es fulanito@gmail.com')
+
+      app = BotClient.new(token)
+      app.run_once
+
+      expect(stub_req).to have_been_requested
+    end
   end
 end
