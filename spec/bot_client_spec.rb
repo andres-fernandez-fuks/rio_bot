@@ -149,5 +149,25 @@ describe 'BotClient' do
       app.run_once
     end
   end
+
+  context 'Cuando el bot recibe /aceptarOferta 1' do # rubocop:disable RSpec/ContextWording:
+    let(:token) { 123_456 }
+
+    before(:each) do
+      when_i_send_text(token, '/aceptarOferta 1')
+      allow(respuesta_api).to receive(:status).and_return(204)
+      allow(api_fiubak).to receive(:registrar_auto).and_return(respuesta_api)
+    end
+
+    it 'Deberia aceptar la oferta en la API' do
+      stub_request(:post, "https://api.telegram.org/bot#{token}/sendMessage")
+        .to_return(status: 200, body: {}.to_json, headers: {})
+
+      expect(api_fiubak).to receive(:aceptar_oferta).with('1').once
+
+      app = BotClient.new(token)
+      app.run_once
+    end
+  end
 end
 # rubocop:enable Metrics/LineLength
