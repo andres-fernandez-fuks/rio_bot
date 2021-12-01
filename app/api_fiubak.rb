@@ -28,4 +28,8 @@ class ApiFiubak
     response = consultar_usuario(id_telegram)
     response.status == 200
   end
+
+  def aceptar_oferta(id_oferta)
+    Faraday.patch("#{@url}/ofertas/#{id_oferta}")
+  end
 end
