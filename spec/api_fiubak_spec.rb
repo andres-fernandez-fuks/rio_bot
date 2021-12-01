@@ -66,4 +66,16 @@ describe 'ApiFiubak' do
     ApiFiubak.new('http://rio.api.com').aceptar_oferta(id_oferta)
     expect(stub).to have_been_requested
   end
+
+  it 'consultar todas las ofertas debe enviar un GET a /publicaciones' do
+    stub = stub_request(:get, 'http://rio.api.com/publicaciones').to_return status: 200, body: [{ 'id': 123, 'precio': 30_000 }].to_json
+    ApiFiubak.new('http://rio.api.com').listar_publicaciones
+    expect(stub).to have_been_requested
+  end
+
+  it 'consultar todas las ofertas devuelve las ofertas existentes' do
+    stub_request(:get, 'http://rio.api.com/publicaciones').to_return status: 200, body: [{ 'id': 123, 'precio': 30_000 }].to_json
+    publicaciones = ApiFiubak.new('http://rio.api.com').listar_publicaciones
+    expect(publicaciones.length).to eq 1
+  end
 end

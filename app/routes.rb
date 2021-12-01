@@ -56,4 +56,14 @@ class Routes
   default do |bot, message|
     bot.api.send_message(chat_id: message.chat.id, text: 'Uh? No te entiendo! Me repetis la pregunta?')
   end
+
+  on_message '/listarPublicaciones' do |bot, message|
+    publicaciones = ApiFiubak.new(ENV['API_URL']).listar_publicaciones
+    if publicaciones.empty?
+      bot.api.send_message(chat_id: message.chat.id, text: 'No hay publicaciones disponibles.')
+    else
+      bot.api.send_message(chat_id: message.chat.id, text: 'Las publicaciones disponibles son las siguientes:')
+
+    end
+  end
 end

@@ -32,4 +32,9 @@ class ApiFiubak
   def aceptar_oferta(id_oferta)
     Faraday.patch("#{@url}/ofertas/#{id_oferta}", estado: 'aceptada')
   end
+
+  def listar_publicaciones
+    response = Faraday.get("#{@url}/publicaciones")
+    JSON.parse(response.body)
+  end
 end
