@@ -128,5 +128,26 @@ describe 'BotClient' do
       expect(stub_req).to have_been_requested
     end
   end
+
+  context 'Cuando el bot recibe /registrarAuto AAA123,Fiat,Uno,2001,800000' do # rubocop:disable RSpec/ContextWording:
+    let(:token) { 123_456 }
+
+    before(:each) do
+      when_i_send_text(token, '/registrarAuto AAA123,Fiat,Uno,2001,800000')
+      allow(respuesta_api).to receive(:status).and_return(201)
+      allow(respuesta_api).to receive(:body).and_return(id: '1')
+      allow(api_fiubak).to receive(:registrar_auto).and_return(respuesta_api)
+    end
+
+    it 'Intenta crear una publicacion en la api' do
+      stub_request(:post, "https://api.telegram.org/bot#{token}/sendMessage")
+        .to_return(status: 200, body: {}.to_json, headers: {})
+
+      expect(api_fiubak).to receive(:registrar_auto).once
+
+      app = BotClient.new(token)
+      app.run_once
+    end
+  end
 end
 # rubocop:enable Metrics/LineLength

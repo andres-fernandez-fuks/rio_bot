@@ -21,9 +21,9 @@ class Routes
     modelo = args['modelo']
     anio = args['anio']
     precio = args['precio']
-    id_telegram = message.from.id
+    id_telegram = message.from.id.to_s
     respuesta = ApiFiubak.new(ENV['API_URL']).registrar_auto(patente, marca, modelo, anio, precio, id_telegram)
-    id_registro_auto = JSON(respuesta.body).id
+    id_registro_auto = JSON(respuesta.body)['id']
     bot.api.send_message(chat_id: message.chat.id, text: "Gracias por ingresar su auto, lo cotizaremos y le informaremos a la brevedad, el id unico es #{id_registro_auto}") if respuesta.status == 201
   end
 
