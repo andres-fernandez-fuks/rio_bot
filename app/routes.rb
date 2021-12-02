@@ -68,7 +68,7 @@ class Routes
     else
       bot.api.send_message(chat_id: message.chat.id, text: 'Las publicaciones disponibles son las siguientes:')
       publicaciones.each do |publicacion|
-        bot.api.send_message(chat_id: message.chat.id, text: "Auto X \n Precio: #{publicacion['precio']}\n")
+        bot.api.send_message(chat_id: message.chat.id, text: "Vehículo: VW Suran, \nPrecio: #{publicacion['precio']}, \nGarantía FIUBAK\n")
       end
     end
   end
