@@ -15,7 +15,7 @@ module Opciones
 
     def self.handle_response(id_opcion)
       responses = ['Para registrar un auto, ingresar: /registrarAuto',
-                   'Para buscar publicaciones, ingresar: /listarAutos',
+                   'Para buscar publicaciones, ingresar: /listarPublicaciones',
                    'Para aceptar una oferta, ingresar: /aceptarOferta id_oferta']
       responses[id_opcion.to_i - 1]
     end
