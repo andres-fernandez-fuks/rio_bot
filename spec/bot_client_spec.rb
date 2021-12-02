@@ -2,11 +2,9 @@ require 'spec_helper'
 require 'webmock/rspec'
 # Uncomment to use VCR
 # require 'vcr_helper'
-
+# rubocop:disable RSpec/ContextWording, Metrics/LineLength
 require 'byebug'
 require "#{File.dirname(__FILE__)}/../app/bot_client"
-
-# rubocop:disable Metrics/LineLength
 
 def when_i_send_text(token, message_text)
   body = { "ok": true, "result": [{ "update_id": 693_981_718,
@@ -100,7 +98,7 @@ describe 'BotClient' do
     app.run_once
   end
 
-  context 'Cuando el bot recibe /registro Fulanito,fulanito@gmail' do # rubocop:disable RSpec/ContextWording:
+  context 'Cuando el bot recibe /registro Fulanito,fulanito@gmail' do
     let(:token) { 'fake_token' }
 
     before(:each) do
@@ -129,7 +127,7 @@ describe 'BotClient' do
     end
   end
 
-  context 'Cuando el bot recibe /registrarAuto AAA123,Fiat,Uno,2001,800000' do # rubocop:disable RSpec/ContextWording:
+  context 'Cuando el bot recibe /registrarAuto AAA123,Fiat,Uno,2001,800000' do
     let(:token) { 123_456 }
 
     before(:each) do
@@ -150,7 +148,7 @@ describe 'BotClient' do
     end
   end
 
-  context 'Cuando el bot recibe /aceptarOferta 1' do # rubocop:disable RSpec/ContextWording:
+  context 'Cuando el bot recibe /aceptarOferta 1' do
     let(:token) { 123_456 }
 
     before(:each) do
@@ -169,5 +167,21 @@ describe 'BotClient' do
       app.run_once
     end
   end
+
+  context 'Cuando el bot recibe listar ofertas y no hay ninguna existente' do
+    let(:token) { 'fake_token' }
+
+    before(:each) do
+      when_i_send_text(token, '/listarPublicaciones')
+    end
+
+    it 'deberia no retornar nada' do
+      then_i_get_text(token, 'No hay publicaciones disponibles.')
+      allow(respuesta_api).to receive(:empty?).and_return(true)
+      allow(api_fiubak).to receive(:listar_publicaciones).and_return(respuesta_api)
+      app = BotClient.new(token)
+      app.run_once
+    end
+  end
 end
-# rubocop:enable Metrics/LineLength
+# rubocop:enable RSpec/ContextWording, Metrics/LineLength
