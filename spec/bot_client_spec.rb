@@ -156,7 +156,7 @@ describe 'BotClient' do
     before(:each) do
       when_i_send_text(token, '/aceptarOferta 1')
       allow(respuesta_api).to receive(:status).and_return(204)
-      allow(api_fiubak).to receive(:registrar_auto).and_return(respuesta_api)
+      allow(api_fiubak).to receive(:aceptar_oferta).and_return(respuesta_api)
     end
 
     it 'Deberia aceptar la oferta en la API' do
@@ -174,6 +174,20 @@ describe 'BotClient' do
       app = BotClient.new(token)
       app.run_once
       expect(stub_req).to have_been_requested
+    end
+
+    context 'Y hay un error en el llamado a la API' do # rubocop:disable RSpec/ContextWording:
+      before(:each) do
+        allow(respuesta_api).to receive(:status).and_return(404)
+        allow(api_fiubak).to receive(:aceptar_oferta).and_return(respuesta_api)
+      end
+
+      it 'Deberia devolver mensaje de error' do
+        stub_req = then_i_get_text(token, 'Error al procesar comando.')
+        app = BotClient.new(token)
+        app.run_once
+        expect(stub_req).to have_been_requested
+      end
     end
   end
 end
