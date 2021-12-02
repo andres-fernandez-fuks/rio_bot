@@ -63,7 +63,9 @@ class Routes
       bot.api.send_message(chat_id: message.chat.id, text: 'No hay publicaciones disponibles.')
     else
       bot.api.send_message(chat_id: message.chat.id, text: 'Las publicaciones disponibles son las siguientes:')
-
+      publicaciones.each do |publicacion|
+        bot.api.send_message(chat_id: message.chat.id, text: "Auto X \n Precio: #{publicacion['precio']}\n")
+      end
     end
   end
 end

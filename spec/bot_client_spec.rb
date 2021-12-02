@@ -196,11 +196,12 @@ describe 'BotClient' do
 
     before(:each) do
       when_i_send_text(token, '/listarPublicaciones')
+      then_i_get_text(token, 'Las publicaciones disponibles son las siguientes:')
     end
 
     it 'deberia retornarlas' do
-      then_i_get_text(token, 'Las publicaciones disponibles son las siguientes:')
       allow(respuesta_api).to receive(:empty?).and_return(false)
+      allow(respuesta_api).to receive(:each).and_return('precio' => 30_000, 'Auto' => 'VW Suran 2017')
       allow(api_fiubak).to receive(:listar_publicaciones).and_return(respuesta_api)
       app = BotClient.new(token)
       app.run_once
