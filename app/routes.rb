@@ -27,9 +27,10 @@ class Routes
     bot.api.send_message(chat_id: message.chat.id, text: "Gracias por ingresar su auto, lo cotizaremos y le informaremos a la brevedad, el id unico es #{id_registro_auto}") if respuesta.status == 201
   end
 
-  on_message_pattern %r{/aceptarOferta (?<id_oferta>.*)} do |_bot, _message, args|
+  on_message_pattern %r{/aceptarOferta (?<id_oferta>.*)} do |bot, message, args|
     id_oferta = args['id_oferta']
     ApiFiubak.new(ENV['API_URL']).aceptar_oferta(id_oferta)
+    bot.api.send_message(chat_id: message.chat.id, text: 'La oferta fue aceptada.')
   end
 
   on_message '/help' do |bot, message|

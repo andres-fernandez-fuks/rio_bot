@@ -166,6 +166,13 @@ describe 'BotClient' do
       app = BotClient.new(token)
       app.run_once
     end
+
+    it 'Deberia devolver mensaje "La oferta fue aceptada."' do
+      stub_req = then_i_get_text(token, 'La oferta fue aceptada.')
+      app = BotClient.new(token)
+      app.run_once
+      expect(stub_req).to have_been_requested
+    end
   end
 
   context 'Cuando el bot recibe listar ofertas y no hay ninguna existente' do
