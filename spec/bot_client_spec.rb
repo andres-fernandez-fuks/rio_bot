@@ -190,5 +190,21 @@ describe 'BotClient' do
       app.run_once
     end
   end
+
+  context 'Cuando el bot recibe listar ofertas hay varias' do
+    let(:token) { 'fake_token' }
+
+    before(:each) do
+      when_i_send_text(token, '/listarPublicaciones')
+    end
+
+    it 'deberia retornarlas' do
+      then_i_get_text(token, 'Las publicaciones disponibles son las siguientes:')
+      allow(respuesta_api).to receive(:empty?).and_return(false)
+      allow(api_fiubak).to receive(:listar_publicaciones).and_return(respuesta_api)
+      app = BotClient.new(token)
+      app.run_once
+    end
+  end
 end
 # rubocop:enable RSpec/ContextWording, Metrics/LineLength
