@@ -61,7 +61,7 @@ describe 'ApiFiubak' do
 
   it 'Cuando se acepta una oferta con id 1 se deberia enviar un PATCH a /ofertas/1 con body { estado: aceptada }' do
     id_oferta = 1
-    stub = stub_request(:patch, "http://rio.api.com/ofertas/#{id_oferta}").with(body: { estado: 'aceptada' }).to_return status: 204
+    stub = stub_request(:patch, "http://rio.api.com/ofertas/#{id_oferta}").with(body: { estado: 'aceptada' }.to_json).to_return status: 204
 
     ApiFiubak.new('http://rio.api.com').aceptar_oferta(id_oferta)
     expect(stub).to have_been_requested
