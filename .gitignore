@@ -11,4 +11,3 @@
 *.log
 secret.yaml
 reports
-docker-compose.yml
