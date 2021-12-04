@@ -13,7 +13,7 @@ class ErrorComandoNoContemplado < Error
   end
 end
 
-class ErrorUsuarioNoRegistrado < Mensaje
+class ErrorUsuarioNoRegistrado < Error
   def self.crear(id_usuario)
     'El usuario con id ' + id_usuario + ' no se encuentra registrado'
   end

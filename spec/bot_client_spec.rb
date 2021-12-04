@@ -168,7 +168,7 @@ describe 'BotClient' do
     end
 
     it 'Deberia devolver mensaje "La oferta fue aceptada."' do
-      stub_req = then_i_get_text(token, 'La oferta fue aceptada.')
+      stub_req = then_i_get_text(token, 'La oferta fue aceptada')
       app = BotClient.new(token)
       app.run_once
       expect(stub_req).to have_been_requested
@@ -181,7 +181,7 @@ describe 'BotClient' do
       end
 
       it 'Deberia devolver mensaje de error' do
-        stub_req = then_i_get_text(token, 'Error al procesar comando.')
+        stub_req = then_i_get_text(token, 'Error al procesar el comando')
         app = BotClient.new(token)
         app.run_once
         expect(stub_req).to have_been_requested
@@ -197,7 +197,7 @@ describe 'BotClient' do
     end
 
     it 'deberia no retornar nada' do
-      then_i_get_text(token, 'No hay publicaciones disponibles.')
+      then_i_get_text(token, 'No hay publicaciones disponibles')
       allow(respuesta_api).to receive(:empty?).and_return(true)
       allow(api_fiubak).to receive(:listar_publicaciones).and_return(respuesta_api)
       app = BotClient.new(token)

@@ -39,7 +39,7 @@ end
 
 class MensajeIntroduccionPublicaciones < Mensaje
   def self.crear
-    'Sus publicaciones son las siguientes:'
+    'Las publicaciones disponibles son las siguientes:'
   end
 end
 
