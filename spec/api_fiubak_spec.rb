@@ -84,4 +84,10 @@ describe 'ApiFiubak' do
     publicaciones = ApiFiubak.new('http://rio.api.com').listar_publicaciones
     expect(publicaciones.length).to eq 1
   end
+
+  it 'Cuando consulto por las ofertas de una publicacion con id 1 envía GET a /publicaciones/1/ofertas' do
+    stub = stub_request(:get, 'http://rio.api.com/publicaciones/1/ofertas').to_return status: 200
+    ApiFiubak.new('http://rio.api.com').ofertas_de_publicacion(1)
+    expect(stub).to have_been_requested
+  end
 end

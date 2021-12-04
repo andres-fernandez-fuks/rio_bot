@@ -45,4 +45,8 @@ class ApiFiubak
 
     JSON.parse(response.body)
   end
+
+  def ofertas_de_publicacion(id_publicacion)
+    Faraday.get("#{@url}/publicaciones/#{id_publicacion}/ofertas")
+  end
 end
