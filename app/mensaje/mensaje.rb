@@ -37,6 +37,18 @@ class MensajeSinPublicaciones < Mensaje
   end
 end
 
+class MensajeSinPublicacionesPropias < Mensaje
+  def self.crear
+    'No tiene publicaciones realizadas'
+  end
+end
+
+class MensajeIntroduccionPublicacionesPropias < Mensaje
+  def self.crear
+    'Sus publicaciones son las siguientes:'
+  end
+end
+
 class MensajeIntroduccionPublicaciones < Mensaje
   def self.crear
     'Las publicaciones disponibles son las siguientes:'

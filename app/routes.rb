@@ -82,9 +82,9 @@ class Routes
       respuesta = mensajero.armar_mensaje(ErrorUsuarioNoRegistrado.crear(id_telegram))
       bot.api.send_message(chat_id: message.chat.id, text: respuesta)
     elsif publicaciones.empty?
-      bot.api.send_message(chat_id: message.chat.id, text: MensajeSinPublicaciones.crear)
+      bot.api.send_message(chat_id: message.chat.id, text: MensajeSinPublicacionesPropias.crear)
     else
-      bot.api.send_message(chat_id: message.chat.id, text: MensajeIntroduccionPublicaciones.crear)
+      bot.api.send_message(chat_id: message.chat.id, text: MensajeIntroduccionPublicacionesPropias.crear)
       publicaciones.each do |publicacion|
         bot.api.send_message(chat_id: message.chat.id, text: MensajePublicacion.crear(publicacion))
       end

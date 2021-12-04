@@ -189,7 +189,7 @@ describe 'BotClient' do
     end
   end
 
-  context 'Cuando el bot recibe listar ofertas y no hay ninguna existente' do
+  context 'Cuando el bot recibe listar publicaciones y no hay ninguna existente' do
     let(:token) { 'fake_token' }
 
     before(:each) do
@@ -205,7 +205,7 @@ describe 'BotClient' do
     end
   end
 
-  context 'Cuando el bot recibe listar ofertas hay varias' do
+  context 'Cuando el bot recibe listar publicaciones y hay varias' do
     let(:token) { 'fake_token' }
 
     before(:each) do
@@ -217,6 +217,39 @@ describe 'BotClient' do
       allow(respuesta_api).to receive(:empty?).and_return(false)
       allow(respuesta_api).to receive(:each).and_return('precio' => 30_000, 'Auto' => 'VW Suran 2017')
       allow(api_fiubak).to receive(:listar_publicaciones).and_return(respuesta_api)
+      app = BotClient.new(token)
+      app.run_once
+    end
+  end
+
+  context 'Cuando el bot recibe listar mis publicaciones y no hay ninguna existente' do
+    let(:token) { 'fake_token' }
+
+    before(:each) do
+      when_i_send_text(token, '/misPublicaciones')
+    end
+
+    it 'deberia no retornar nada' do
+      then_i_get_text(token, 'No tiene publicaciones realizadas')
+      allow(respuesta_api).to receive(:empty?).and_return(true)
+      allow(api_fiubak).to receive(:listar_mis_publicaciones).and_return(respuesta_api)
+      app = BotClient.new(token)
+      app.run_once
+    end
+  end
+
+  context 'Cuando el bot recibe listar mis publicaciones y hay varias' do
+    let(:token) { 'fake_token' }
+
+    before(:each) do
+      when_i_send_text(token, '/misPublicaciones')
+      then_i_get_text(token, 'Sus publicaciones son las siguientes:')
+    end
+
+    it 'deberia retornarlas' do
+      allow(respuesta_api).to receive(:empty?).and_return(false)
+      allow(respuesta_api).to receive(:each).and_return('precio' => 30_000, 'Auto' => 'VW Suran 2017')
+      allow(api_fiubak).to receive(:listar_mis_publicaciones).and_return(respuesta_api)
       app = BotClient.new(token)
       app.run_once
     end
