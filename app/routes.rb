@@ -94,6 +94,13 @@ class Routes
   on_message_pattern %r{/ofertas (?<id_publicacion>.*)} do |bot, message, args|
     id_publicacion = args['id_publicacion']
     ofertas = ApiFiubak.new(ENV['API_URL']).listar_ofertas(id_publicacion)
-    bot.api.send_message(chat_id: message.chat.id, text: 'No se han recibido ofertas para la publicacion.') if ofertas.empty?
+    if ofertas.empty?
+      bot.api.send_message(chat_id: message.chat.id, text: 'No se han recibido ofertas para la publicacion.')
+    else
+      bot.api.send_message(chat_id: message.chat.id, text: 'Se han recibido las siguientes ofertas:')
+      ofertas.map do |oferta|
+        bot.api.send_message(chat_id: message.chat.id, text: "Id: #{oferta['id']}\nMonto: #{oferta['monto']}")
+      end
+    end
   end
 end

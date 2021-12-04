@@ -269,6 +269,17 @@ describe 'BotClient' do
       app.run_once
       expect(stub_req).to have_been_requested
     end
+
+    it 'Y hay una oferta, devuelve la oferta existente' do # rubocop:disable RSpec/ExampleLength
+      allow(api_fiubak).to receive(:listar_ofertas).and_return([{ 'id' => '1', 'monto' => 500_000 }])
+      stub_req = then_i_get_text(token, 'Se han recibido las siguientes ofertas:')
+      stub_req2 = then_i_get_text(token, "Id: 1\nMonto: 500000")
+      stub_req.should
+      app = BotClient.new(token)
+      app.run_once
+      expect(stub_req).to have_been_requested
+      expect(stub_req2).to have_been_requested
+    end
   end
 end
 # rubocop:enable RSpec/ContextWording, Metrics/LineLength
