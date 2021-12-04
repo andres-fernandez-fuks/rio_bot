@@ -264,7 +264,7 @@ describe 'BotClient' do
 
     it 'Y no hay ofertas, deberia devolver "No hay ofertas para la publicacion."' do
       allow(api_fiubak).to receive(:listar_ofertas).and_return([])
-      stub_req = then_i_get_text(token, 'No hay ofertas para la publicacion.')
+      stub_req = then_i_get_text(token, 'No se han recibido ofertas para la publicacion.')
       app = BotClient.new(token)
       app.run_once
       expect(stub_req).to have_been_requested
