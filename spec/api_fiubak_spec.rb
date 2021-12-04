@@ -86,7 +86,7 @@ describe 'ApiFiubak' do
   end
 
   it 'Cuando consulto por las ofertas de una publicacion con id 1 envía GET a /publicaciones/1/ofertas' do
-    stub = stub_request(:get, 'http://rio.api.com/publicaciones/1/ofertas').to_return status: 200
+    stub = stub_request(:get, 'http://rio.api.com/publicaciones/1/ofertas').to_return status: 200, body: [].to_json
     ApiFiubak.new('http://rio.api.com').listar_ofertas(1)
     expect(stub).to have_been_requested
   end
@@ -94,5 +94,10 @@ describe 'ApiFiubak' do
   it 'Cuando consulto por las ofertas de una publicacion sin ofertas, devuelvo un arreglo vacio' do
     stub_request(:get, 'http://rio.api.com/publicaciones/1/ofertas').to_return status: 200, body: [].to_json
     expect(ApiFiubak.new('http://rio.api.com').listar_ofertas(1)).to eq []
+  end
+
+  it 'Cuando consulto por las ofertas de una publicacion con una oferta, devuelvo arreglo con una oferta' do
+    stub_request(:get, 'http://rio.api.com/publicaciones/1/ofertas').to_return status: 200, body: [{ 'id': 123, 'monto': 30_000 }].to_json
+    expect(ApiFiubak.new('http://rio.api.com').listar_ofertas(1)).to eq [{ 'id' => 123, 'monto' => 30_000 }]
   end
 end
