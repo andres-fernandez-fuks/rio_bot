@@ -14,7 +14,7 @@ class Routes
     mail = args['mail']
     id_telegram = message.from.id
     respuesta = ApiFiubak.new(ENV['API_URL']).registrar_usuario(id_telegram, mail, nombre_usuario)
-    bot.api.send_message(chat_id: message.chat.id, text: "Bienvenido #{nombre_usuario}, tu email es #{mail}") if respuesta.status == 201
+    bot.api.send_message(chat_id: message.chat.id, text: MensajeRegistroCorrecto.crear(nombre_usuario, mail)) if respuesta.status == 201
   end
 
   on_message_pattern %r{/registrarAuto (?<patente>.*),(?<marca>.*),(?<modelo>.*),(?<anio>.*),(?<precio>.*)} do |bot, message, args|
@@ -25,17 +25,17 @@ class Routes
     precio = args['precio']
     id_telegram = message.from.id.to_s
     respuesta = ApiFiubak.new(ENV['API_URL']).registrar_auto(patente, marca, modelo, anio, precio, id_telegram)
-    id_registro_auto = JSON(respuesta.body)['id']
-    bot.api.send_message(chat_id: message.chat.id, text: "Gracias por ingresar su auto, lo cotizaremos y le informaremos a la brevedad, el id unico es #{id_registro_auto}") if respuesta.status == 201
+    id_publicacion = JSON(respuesta.body)['id']
+    bot.api.send_message(chat_id: message.chat.id, text: MensajeRegistroDeAutoExitoso.crear(id_publicacion)) if respuesta.status == 201
   end
 
   on_message_pattern %r{/aceptarOferta (?<id_oferta>.*)} do |bot, message, args|
     id_oferta = args['id_oferta']
     respuesta = ApiFiubak.new(ENV['API_URL']).aceptar_oferta(id_oferta)
     if respuesta.status == 204
-      bot.api.send_message(chat_id: message.chat.id, text: 'La oferta fue aceptada.')
+      bot.api.send_message(chat_id: message.chat.id, text: MensajeOfertaAceptada.crear)
     else
-      bot.api.send_message(chat_id: message.chat.id, text: 'Error al procesar comando.')
+      bot.api.send_message(chat_id: message.chat.id, text: ErrorDeProcesamiento.crear)
     end
   end
 
@@ -43,14 +43,14 @@ class Routes
     id_telegram = message.from.id.to_s
     usuario_registrado = ApiFiubak.new(ENV['API_URL']).esta_registrado?(id_telegram)
     if !usuario_registrado
-      bot.api.send_message(chat_id: message.chat.id, text: 'Para registrarse, ingrese /registro nombre_usuario,mail')
+      bot.api.send_message(chat_id: message.chat.id, text: MensajeAyudaUsuarioSinRegistrar.crear)
     else
       boton = Opciones::OpcionUsuarioRegistrado.all.map do |opcion|
         Telegram::Bot::Types::InlineKeyboardButton.new(text: opcion.nombre, callback_data: opcion.id.to_s)
       end
       markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: boton)
 
-      bot.api.send_message(chat_id: message.chat.id, text: '¿Con qué necesita ayuda?', reply_markup: markup)
+      bot.api.send_message(chat_id: message.chat.id, text: MensajeAyudaUsuarioRegistrado.crear, reply_markup: markup)
     end
   end
 
@@ -60,17 +60,17 @@ class Routes
   end
 
   default do |bot, message|
-    bot.api.send_message(chat_id: message.chat.id, text: 'Uh? No te entiendo! Me repetis la pregunta?')
+    bot.api.send_message(chat_id: message.chat.id, text: ErrorComandoNoContemplado.crear)
   end
 
   on_message '/listarPublicaciones' do |bot, message|
     publicaciones = ApiFiubak.new(ENV['API_URL']).listar_publicaciones
     if publicaciones.empty?
-      bot.api.send_message(chat_id: message.chat.id, text: 'No hay publicaciones disponibles.')
+      bot.api.send_message(chat_id: message.chat.id, text: MensajeSinPublicaciones.crear)
     else
-      bot.api.send_message(chat_id: message.chat.id, text: 'Las publicaciones disponibles son las siguientes:')
+      bot.api.send_message(chat_id: message.chat.id, text: MensajeIntroduccionPublicaciones.crear)
       publicaciones.each do |publicacion|
-        bot.api.send_message(chat_id: message.chat.id, text: "Vehículo: VW Suran, \nPrecio: #{publicacion['precio']}, \nGarantía FIUBAK\n")
+        bot.api.send_message(chat_id: message.chat.id, text: MensajePublicacion.crear(publicacion))
       end
     end
   end
@@ -79,14 +79,14 @@ class Routes
     id_telegram = message.from.id.to_s
     publicaciones = ApiFiubak.new(ENV['API_URL']).listar_mis_publicaciones(id_telegram)
     if !publicaciones
-      respuesta = mensajero.armar_mensaje(MensajeUsuarioNoRegistrado.new(id_telegram))
+      respuesta = mensajero.armar_mensaje(ErrorUsuarioNoRegistrado.crear(id_telegram))
       bot.api.send_message(chat_id: message.chat.id, text: respuesta)
     elsif publicaciones.empty?
-      bot.api.send_message(chat_id: message.chat.id, text: 'No hay publicaciones disponibles.')
+      bot.api.send_message(chat_id: message.chat.id, text: MensajeSinPublicaciones.crear)
     else
-      bot.api.send_message(chat_id: message.chat.id, text: 'Sus publicaciones son las siguientes:')
+      bot.api.send_message(chat_id: message.chat.id, text: MensajeIntroduccionPublicaciones.crear)
       publicaciones.each do |publicacion|
-        bot.api.send_message(chat_id: message.chat.id, text: "Vehículo: VW Suran, \nPrecio: #{publicacion['precio']}, \nGarantía FIUBAK\n")
+        bot.api.send_message(chat_id: message.chat.id, text: MensajePublicacion.crear(publicacion))
       end
     end
   end
