@@ -37,4 +37,9 @@ class ApiFiubak
     response = Faraday.get("#{@url}/publicaciones")
     JSON.parse(response.body)
   end
+
+  def listar_mis_publicaciones
+    response = Faraday.get("#{@url}/publicaciones/yo")
+    JSON.parse(response.body)
+  end
 end

@@ -72,4 +72,16 @@ class Routes
       end
     end
   end
+
+  on_message '/misPublicaciones' do |bot, message|
+    publicaciones = ApiFiubak.new(ENV['API_URL']).listar_mis_publicaciones
+    if publicaciones.empty?
+      bot.api.send_message(chat_id: message.chat.id, text: 'No hay publicaciones disponibles.')
+    else
+      bot.api.send_message(chat_id: message.chat.id, text: 'Las publicaciones disponibles son las siguientes:')
+      publicaciones.each do |publicacion|
+        bot.api.send_message(chat_id: message.chat.id, text: "Vehículo: VW Suran, \nPrecio: #{publicacion['precio']}, \nGarantía FIUBAK\n")
+      end
+    end
+  end
 end
