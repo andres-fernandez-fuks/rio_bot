@@ -254,5 +254,21 @@ describe 'BotClient' do
       app.run_once
     end
   end
+
+  context 'Cuando el bot recible /ofertas 1' do
+    let(:token) { 12_345_678 }
+
+    before(:each) do
+      when_i_send_text(token, '/ofertas 1')
+    end
+
+    it 'Y no hay ofertas, deberia devolver "No hay ofertas para la publicacion."' do
+      allow(api_fiubak).to receive(:listar_ofertas).and_return([])
+      stub_req = then_i_get_text(token, 'No hay ofertas para la publicacion.')
+      app = BotClient.new(token)
+      app.run_once
+      expect(stub_req).to have_been_requested
+    end
+  end
 end
 # rubocop:enable RSpec/ContextWording, Metrics/LineLength

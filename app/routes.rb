@@ -90,4 +90,10 @@ class Routes
       end
     end
   end
+
+  on_message_pattern %r{/ofertas (?<id_publicacion>.*)} do |bot, message, args|
+    id_publicacion = args['id_publicacion']
+    ofertas = ApiFiubak.new(ENV['API_URL']).listar_ofertas(id_publicacion)
+    bot.api.send_message(chat_id: message.chat.id, text: 'No hay ofertas para la publicacion.') if ofertas.empty?
+  end
 end
