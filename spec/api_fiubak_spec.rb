@@ -90,4 +90,9 @@ describe 'ApiFiubak' do
     ApiFiubak.new('http://rio.api.com').listar_ofertas(1)
     expect(stub).to have_been_requested
   end
+
+  it 'Cuando consulto por las ofertas de una publicacion sin ofertas, devuelvo un arreglo vacio' do
+    stub_request(:get, 'http://rio.api.com/publicaciones/1/ofertas').to_return status: 200, body: [].to_json
+    expect(ApiFiubak.new('http://rio.api.com').listar_ofertas(1)).to eq []
+  end
 end
