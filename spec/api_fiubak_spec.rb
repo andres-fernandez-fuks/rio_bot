@@ -75,7 +75,7 @@ describe 'ApiFiubak' do
 
   it 'consultar por las publicaciones de un usuario específico debe enviar un GET a /publicaciones/yo' do
     stub = stub_request(:get, 'http://rio.api.com/publicaciones/yo').to_return status: 200, body: [{ 'id': 123, 'precio': 30_000 }].to_json
-    ApiFiubak.new('http://rio.api.com').listar_mis_publicaciones
+    ApiFiubak.new('http://rio.api.com').listar_mis_publicaciones('ID_TELEGRAM')
     expect(stub).to have_been_requested
   end
 

@@ -38,8 +38,11 @@ class ApiFiubak
     JSON.parse(response.body)
   end
 
-  def listar_mis_publicaciones
-    response = Faraday.get("#{@url}/publicaciones/yo")
+  def listar_mis_publicaciones(id_telegram)
+    header = { 'ID_TELEGRAM' => id_telegram }
+    response = Faraday.get("#{@url}/publicaciones/yo", nil, header)
+    return false if response.status != 200
+
     JSON.parse(response.body)
   end
 end

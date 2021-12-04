@@ -2,7 +2,9 @@ require "#{File.dirname(__FILE__)}/../lib/routing"
 require "#{File.dirname(__FILE__)}/../lib/version"
 require "#{File.dirname(__FILE__)}/opciones/opciones_usuario_registrado"
 require_relative 'api_fiubak'
-require_relative 'mensajero'
+Dir[File.join(__dir__, 'mensaje', '*.rb')].each { |file| require file }
+
+Dir['mensaje'].each { |file| require_relative file }
 
 class Routes
   include Routing
@@ -74,11 +76,15 @@ class Routes
   end
 
   on_message '/misPublicaciones' do |bot, message|
-    publicaciones = ApiFiubak.new(ENV['API_URL']).listar_mis_publicaciones
-    if publicaciones.empty?
+    id_telegram = message.from.id.to_s
+    publicaciones = ApiFiubak.new(ENV['API_URL']).listar_mis_publicaciones(id_telegram)
+    if !publicaciones
+      respuesta = mensajero.armar_mensaje(MensajeUsuarioNoRegistrado.new(id_telegram))
+      bot.api.send_message(chat_id: message.chat.id, text: respuesta)
+    elsif publicaciones.empty?
       bot.api.send_message(chat_id: message.chat.id, text: 'No hay publicaciones disponibles.')
     else
-      bot.api.send_message(chat_id: message.chat.id, text: 'Las publicaciones disponibles son las siguientes:')
+      bot.api.send_message(chat_id: message.chat.id, text: 'Sus publicaciones son las siguientes:')
       publicaciones.each do |publicacion|
         bot.api.send_message(chat_id: message.chat.id, text: "Vehículo: VW Suran, \nPrecio: #{publicacion['precio']}, \nGarantía FIUBAK\n")
       end
