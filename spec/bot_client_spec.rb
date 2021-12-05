@@ -230,11 +230,12 @@ describe 'BotClient' do
     end
 
     it 'deberia no retornar nada' do
-      then_i_get_text(token, 'No tiene publicaciones realizadas')
+      stub_req = then_i_get_text(token, 'No tiene publicaciones realizadas')
       allow(respuesta_api).to receive(:empty?).and_return(true)
       allow(api_fiubak).to receive(:listar_mis_publicaciones).and_return(respuesta_api)
       app = BotClient.new(token)
       app.run_once
+      expect(stub_req).to have_been_requested
     end
   end
 
