@@ -255,7 +255,7 @@ describe 'BotClient' do
     end
   end
 
-  context 'Cuando el bot recible /ofertas 1' do
+  context 'Cuando el bot recibe /ofertas 1' do
     let(:token) { 12_345_678 }
 
     before(:each) do
@@ -271,9 +271,9 @@ describe 'BotClient' do
     end
 
     it 'Y hay una oferta, devuelve la oferta existente' do # rubocop:disable RSpec/ExampleLength
-      allow(api_fiubak).to receive(:listar_ofertas).and_return([{ 'id' => '1', 'monto' => 500_000 }])
+      allow(api_fiubak).to receive(:listar_ofertas).and_return([{ 'id' => '1', 'monto' => 500_000, 'oferente' => 'fiubak', 'estado' => { 'id' => 'Pendiente' } }])
       stub_req = then_i_get_text(token, 'Se han recibido las siguientes ofertas:')
-      stub_req2 = then_i_get_text(token, "Id: 1\nMonto: 500000")
+      stub_req2 = then_i_get_text(token, "Id: 1\nMonto: $ 500000\nOferente: fiubak\nEstado: Pendiente")
       stub_req.should
       app = BotClient.new(token)
       app.run_once

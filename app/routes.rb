@@ -92,15 +92,18 @@ class Routes
   end
 
   on_message_pattern %r{/ofertas (?<id_publicacion>.*)} do |bot, message, args|
+    id_telegram = message.from.id.to_s
     id_publicacion = args['id_publicacion']
-    ofertas = ApiFiubak.new(ENV['API_URL']).listar_ofertas(id_publicacion)
+    ofertas = ApiFiubak.new(ENV['API_URL']).listar_ofertas(id_publicacion, id_telegram)
     if ofertas.empty?
       bot.api.send_message(chat_id: message.chat.id, text: 'No se han recibido ofertas para la publicacion.')
     else
       bot.api.send_message(chat_id: message.chat.id, text: 'Se han recibido las siguientes ofertas:')
       ofertas.map do |oferta|
-        bot.api.send_message(chat_id: message.chat.id, text: "Id: #{oferta['id']}\nMonto: #{oferta['monto']}")
+        bot.api.send_message(chat_id: message.chat.id, text: "Id: #{oferta['id']}\nMonto: $ #{oferta['monto']}\nOferente: #{oferta['oferente']}\nEstado: #{oferta['estado']['id']}")
       end
     end
+  rescue StandardError
+    bot.api.send_message(chat_id: message.chat.id, text: 'Ha ocurrido un error en la conexion con la API.')
   end
 end
