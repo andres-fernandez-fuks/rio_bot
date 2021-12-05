@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'webmock/rspec'
 # Uncomment to use VCR
 # require 'vcr_helper'
-# rubocop:disable RSpec/ContextWording, Metrics/LineLength
+# rubocop:disable RSpec/ContextWording, Metrics/LineLength, RSpec/ExampleLength
 require 'byebug'
 require "#{File.dirname(__FILE__)}/../app/bot_client"
 
@@ -243,15 +243,21 @@ describe 'BotClient' do
 
     before(:each) do
       when_i_send_text(token, '/misPublicaciones')
-      then_i_get_text(token, 'Sus publicaciones son las siguientes:')
     end
 
     it 'deberia retornarlas' do
-      allow(respuesta_api).to receive(:empty?).and_return(false)
-      allow(respuesta_api).to receive(:each).and_return('precio' => 30_000, 'Auto' => 'VW Suran 2017')
-      allow(api_fiubak).to receive(:listar_mis_publicaciones).and_return(respuesta_api)
+      allow(api_fiubak).to receive(:listar_mis_publicaciones).and_return([{ 'id' => '1',
+                                                                            'precio' => 500_000,
+                                                                            'auto' => { 'marca' => 'VW', 'modelo' => 'Suran', 'anio' => 2017 },
+                                                                            'estado' => 'Pendiente' }])
+      texto_esperado = "ID Publicacion: 1\nVehículo\nMarca: VW\nModelo: Suran\nAño: 2017\nPrecio: $500000\nEstado: Pendiente"
+      stub_req1 = then_i_get_text(token, 'Sus publicaciones son las siguientes:')
+      stub_req2 = then_i_get_text(token, texto_esperado)
+      stub_req1.should
       app = BotClient.new(token)
       app.run_once
+      expect(stub_req1).to have_been_requested
+      expect(stub_req2).to have_been_requested
     end
   end
 
@@ -282,4 +288,4 @@ describe 'BotClient' do
     end
   end
 end
-# rubocop:enable RSpec/ContextWording, Metrics/LineLength
+# rubocop:enable RSpec/ContextWording, Metrics/LineLength, RSpec/ExampleLength
