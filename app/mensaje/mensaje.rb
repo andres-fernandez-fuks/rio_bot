@@ -56,8 +56,24 @@ class MensajeIntroduccionPublicaciones < Mensaje
 end
 
 class MensajePublicacion < Mensaje
+  def self.crear_mi(publicacion)
+    "ID Publicacion: #{publicacion['id']}
+Vehículo
+Marca: #{publicacion['auto']['marca']}
+Modelo: #{publicacion['auto']['modelo']}
+Año: #{publicacion['auto']['anio']}
+Precio: $#{publicacion['precio']}
+Estado: #{publicacion['estado']}"
+  end
+
   def self.crear(publicacion)
-    "Vehículo: VW Suran, \nPrecio: #{publicacion['precio']}, \nGarantía FIUBAK\n"
+    "ID Publicacion: #{publicacion['id']}
+Vehículo
+Marca: #{publicacion['auto']['marca']}
+Modelo: #{publicacion['auto']['modelo']}
+Año: #{publicacion['auto']['anio']}
+Precio: $#{publicacion['precio']}
+Garantia Fiubak"
   end
 end
 

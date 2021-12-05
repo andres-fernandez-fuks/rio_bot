@@ -153,7 +153,7 @@ describe 'BotClient' do
 
     before(:each) do
       when_i_send_text(token, '/aceptarOferta 1')
-      allow(respuesta_api).to receive(:status).and_return(204)
+      allow(respuesta_api).to receive(:status).and_return(200)
       allow(api_fiubak).to receive(:aceptar_oferta).and_return(respuesta_api)
     end
 
