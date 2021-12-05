@@ -6,6 +6,7 @@ Dir[File.join(__dir__, 'mensaje', '*.rb')].each { |file| require file }
 
 Dir['mensaje'].each { |file| require_relative file }
 
+# rubocop: disable Metrics/ClassLength
 class Routes
   include Routing
 
@@ -25,8 +26,12 @@ class Routes
     precio = args['precio']
     id_telegram = message.from.id.to_s
     respuesta = ApiFiubak.new(ENV['API_URL']).registrar_auto(patente, marca, modelo, anio, precio, id_telegram)
-    id_publicacion = JSON(respuesta.body)['id']
-    bot.api.send_message(chat_id: message.chat.id, text: MensajeRegistroDeAutoExitoso.crear(id_publicacion)) if respuesta.status == 201
+    if respuesta.status == 401
+      bot.api.send_message(chat_id: message.chat.id, text: ErrorUsuarioNoRegistrado.crear(id_telegram))
+    else
+      id_publicacion = JSON(respuesta.body)['id']
+      bot.api.send_message(chat_id: message.chat.id, text: MensajeRegistroDeAutoExitoso.crear(id_publicacion)) if respuesta.status == 201
+    end
   end
 
   on_message_pattern %r{/aceptarOferta (?<id_oferta>.*)} do |bot, message, args|
@@ -116,3 +121,4 @@ class Routes
     bot.api.send_message(chat_id: message.chat.id, text: 'Ha ocurrido un error en la conexion con la API.')
   end
 end
+# rubocop: enable Metrics/ClassLength
