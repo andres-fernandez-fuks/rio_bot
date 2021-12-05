@@ -89,8 +89,7 @@ class Routes
     id_telegram = message.from.id.to_s
     publicaciones = ApiFiubak.new(ENV['API_URL']).listar_mis_publicaciones(id_telegram)
     if !publicaciones
-      respuesta = mensajero.armar_mensaje(ErrorUsuarioNoRegistrado.crear(id_telegram))
-      bot.api.send_message(chat_id: message.chat.id, text: respuesta)
+      bot.api.send_message(chat_id: message.chat.id, text: ErrorUsuarioNoRegistrado.crear(id_telegram))
     elsif publicaciones.empty?
       bot.api.send_message(chat_id: message.chat.id, text: MensajeSinPublicacionesPropias.crear)
     else
