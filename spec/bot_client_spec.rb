@@ -308,10 +308,19 @@ describe 'BotClient' do
 
     context 'Y hay una publicacion con id 1' do
       it 'Si esta activa devuelve que la oferta se creo correctamente' do
-        allow(respuesta_api).to receive(:status).and_return(200)
+        allow(respuesta_api).to receive(:status).and_return(201)
         allow(respuesta_api).to receive(:body).and_return({ id: id_oferta, monto: monto }.to_json)
         allow(api_fiubak).to receive(:ofertar).and_return(respuesta_api)
-        stub = then_i_get_text(FAKE_TOKEN, "La oferta se realizó correctamente! \nLa oferta tiene id: #{id_oferta}, y monto #{monto}")
+        stub = then_i_get_text(FAKE_TOKEN, "La oferta se realizó correctamente! \nLa oferta tiene id: #{id_oferta}, y monto $#{monto}")
+        app = BotClient.new(FAKE_TOKEN)
+        app.run_once
+        expect(stub).to have_been_requested
+      end
+
+      it 'Si no está activa, se retorna un texto de error' do
+        allow(respuesta_api).to receive(:status).and_return(409)
+        allow(api_fiubak).to receive(:ofertar).and_return(respuesta_api)
+        stub = then_i_get_text(FAKE_TOKEN, 'Error al procesar el comando')
         app = BotClient.new(FAKE_TOKEN)
         app.run_once
         expect(stub).to have_been_requested
