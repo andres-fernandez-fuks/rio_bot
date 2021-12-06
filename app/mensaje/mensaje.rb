@@ -82,3 +82,9 @@ class MensajeRegistroDeAutoExitoso < Mensaje
     "Gracias por ingresar su auto, lo cotizaremos y le informaremos a la brevedad, el id unico es #{id_publicacion}"
   end
 end
+
+class MensajeOfertaRechazada < Mensaje
+  def self.crear
+    'La oferta fue rechazada'
+  end
+end

@@ -296,5 +296,46 @@ describe 'BotClient' do
       expect(stub_req2).to have_been_requested
     end
   end
+
+  context 'Cuando el bot recibe /rechazarOferta 1' do
+    let(:token) { 123_456 }
+
+    before(:each) do
+      when_i_send_text(token, '/rechazarOferta 1')
+      allow(respuesta_api).to receive(:status).and_return(200)
+      allow(api_fiubak).to receive(:rechazar_oferta).and_return(respuesta_api)
+    end
+
+    it 'Deberia rechazar la oferta en la API' do
+      stub_request(:post, "https://api.telegram.org/bot#{token}/sendMessage")
+        .to_return(status: 200, body: {}.to_json, headers: {})
+
+      expect(api_fiubak).to receive(:rechazar_oferta).with('1').once
+
+      app = BotClient.new(token)
+      app.run_once
+    end
+
+    it 'Deberia devolver mensaje "La oferta fue rechazada."' do
+      stub_req = then_i_get_text(token, 'La oferta fue rechazada')
+      app = BotClient.new(token)
+      app.run_once
+      expect(stub_req).to have_been_requested
+    end
+
+    context 'Y hay un error en el llamado a la API' do # rubocop:disable RSpec/ContextWording:
+      before(:each) do
+        allow(respuesta_api).to receive(:status).and_return(404)
+        allow(api_fiubak).to receive(:rechazar_oferta).and_return(respuesta_api)
+      end
+
+      it 'Deberia devolver mensaje de error' do
+        stub_req = then_i_get_text(token, 'Error al procesar el comando')
+        app = BotClient.new(token)
+        app.run_once
+        expect(stub_req).to have_been_requested
+      end
+    end
+  end
 end
 # rubocop:enable RSpec/ContextWording, Metrics/LineLength, RSpec/ExampleLength
