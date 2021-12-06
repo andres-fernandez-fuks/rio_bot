@@ -230,9 +230,10 @@ describe 'BotClient' do
     it 'deberia retornarlas' do
       allow(api_fiubak).to receive(:listar_publicaciones).and_return([{ 'id' => '1',
                                                                         'precio' => 500_000,
+                                                                        'tipo' => 'p2p',
                                                                         'auto' => { 'marca' => 'VW', 'modelo' => 'Suran', 'anio' => 2017 },
                                                                         'estado' => 'Pendiente' }])
-      texto_esperado = "ID Publicacion: 1\nVehículo\nMarca: VW\nModelo: Suran\nAño: 2017\nPrecio: $500000\nGarantia Fiubak"
+      texto_esperado = "ID Publicacion: 1\nVehículo\nMarca: VW\nModelo: Suran\nAño: 2017\nPrecio: $500000"
 
       stub_req1 = then_i_get_text(token, 'Las publicaciones disponibles son las siguientes:')
       stub_req2 = then_i_get_text(token, texto_esperado)
@@ -240,6 +241,21 @@ describe 'BotClient' do
       app = BotClient.new(token)
       app.run_once
       expect(stub_req1).to have_been_requested
+      expect(stub_req2).to have_been_requested
+    end
+
+    it 'Se debe indicar si la publicacion es de Fiubak' do
+      allow(api_fiubak).to receive(:listar_publicaciones).and_return([{ 'id' => '1',
+                                                                        'precio' => 500_000,
+                                                                        'tipo' => 'fiubak',
+                                                                        'auto' => { 'marca' => 'VW', 'modelo' => 'Suran', 'anio' => 2017 },
+                                                                        'estado' => 'Pendiente' }])
+      texto_esperado = "ID Publicacion: 1\nVehículo\nMarca: VW\nModelo: Suran\nAño: 2017\nPrecio: $500000\nGarantia Fiubak"
+
+      then_i_get_text(token, 'Las publicaciones disponibles son las siguientes:')
+      stub_req2 = then_i_get_text(token, texto_esperado)
+      app = BotClient.new(token)
+      app.run_once
       expect(stub_req2).to have_been_requested
     end
   end
