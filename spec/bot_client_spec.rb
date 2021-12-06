@@ -305,6 +305,8 @@ describe 'BotClient' do
 
     context 'Y hay una publicacion con id 1' do
       it 'Si esta activa devuelve que la oferta se creo correctamente' do
+        allow(respuesta_api).to receive(:status).and_return(200)
+        allow(api_fiubak).to receive(:ofertar).and_return(respuesta_api)
       end
     end
   end
