@@ -95,3 +95,8 @@ class MensajeOfertaRechazada < Mensaje
     'La oferta fue rechazada'
   end
 end
+class MensajeOfertaExitosa < Mensaje
+  def self.crear(id_oferta, monto)
+    "La oferta se realizó correctamente! \nLa oferta tiene id: #{id_oferta}, y monto #{monto}"
+  end
+end

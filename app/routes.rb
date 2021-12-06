@@ -130,5 +130,19 @@ class Routes
       bot.api.send_message(chat_id: message.chat.id, text: ErrorDeProcesamiento.crear)
     end
   end
+
+  on_message_pattern %r{/ofertar (?<id_publicacion>.*), (?<monto>.*)} do |bot, message, args|
+    id_publicacion = args['id_publicacion']
+    monto =  args['monto']
+    id_telegram = message.from.id.to_s
+    respuesta = ApiFiubak.new(ENV['API_URL']).ofertar(id_publicacion, monto, id_telegram)
+    id_oferta = JSON(respuesta.body)['id']
+    monto_creado = JSON(respuesta.body)['monto']
+    if respuesta.status == 200
+      bot.api.send_message(chat_id: message.chat.id, text: MensajeOfertaExitosa.crear(id_oferta, monto_creado))
+    else
+      bot.api.send_message(chat_id: message.chat.id, text: ErrorDeProcesamiento.crear)
+    end
+  end
 end
 # rubocop: enable Metrics/ClassLength

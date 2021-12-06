@@ -299,6 +299,9 @@ describe 'BotClient' do
   end
 
   context 'Cuando el bot recibe /ofertar 1, 35000' do
+    let(:monto) { 35_000 }
+    let(:id_oferta) { '123' }
+
     before(:each) do
       when_i_send_text(FAKE_TOKEN, '/ofertar 1, 35000')
     end
@@ -306,7 +309,12 @@ describe 'BotClient' do
     context 'Y hay una publicacion con id 1' do
       it 'Si esta activa devuelve que la oferta se creo correctamente' do
         allow(respuesta_api).to receive(:status).and_return(200)
+        allow(respuesta_api).to receive(:body).and_return({ id: id_oferta, monto: monto }.to_json)
         allow(api_fiubak).to receive(:ofertar).and_return(respuesta_api)
+        stub = then_i_get_text(FAKE_TOKEN, "La oferta se realizó correctamente! \nLa oferta tiene id: #{id_oferta}, y monto #{monto}")
+        app = BotClient.new(FAKE_TOKEN)
+        app.run_once
+        expect(stub).to have_been_requested
       end
     end
   end
