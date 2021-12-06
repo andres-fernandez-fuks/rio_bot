@@ -300,7 +300,7 @@ describe 'BotClient' do
     end
 
     it 'Y hay una oferta, devuelve la oferta existente' do # rubocop:disable RSpec/ExampleLength
-      allow(api_fiubak).to receive(:listar_ofertas).and_return([{ 'id' => '1', 'monto' => 500_000, 'oferente' => 'fiubak', 'estado' => { 'id' => 'Pendiente' } }])
+      allow(api_fiubak).to receive(:listar_ofertas).and_return([{ 'id' => '1', 'monto' => 500_000, 'oferente' => 'fiubak', 'estado' => 'Pendiente' }])
       stub_req = then_i_get_text(token, 'Se han recibido las siguientes ofertas:')
       stub_req2 = then_i_get_text(token, "Id: 1\nMonto: $ 500000\nOferente: fiubak\nEstado: Pendiente")
       stub_req.should
