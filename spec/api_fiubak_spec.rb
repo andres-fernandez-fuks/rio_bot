@@ -109,4 +109,14 @@ describe 'ApiFiubak' do
     ApiFiubak.new('http://rio.api.com').rechazar_oferta(id_oferta)
     expect(stub).to have_been_requested
   end
+
+  it 'Cuando se oferta por una publicacion activa' do # rubocop:disable RSpec/ExampleLength
+    id_publicacion = 1
+    stub = stub_request(:post, "http://rio.api.com/publicaciones/#{id_publicacion}/oferta")
+           .with(headers: { 'ID_TELEGRAM' => id_telegram })
+           .with(body: { precio: precio }.to_json)
+           .to_return status: 201
+    ApiFiubak.new('http://rio.api.com').ofertar(id_publicacion, precio, id_telegram)
+    expect(stub).to have_been_requested
+  end
 end

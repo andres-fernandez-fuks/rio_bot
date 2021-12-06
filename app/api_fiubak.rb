@@ -57,4 +57,10 @@ class ApiFiubak
   def rechazar_oferta(id_oferta)
     Faraday.patch("#{@url}/ofertas/#{id_oferta}", { estado: 'rechazada' }.to_json)
   end
+
+  def ofertar(id_publicacion, precio, id_telegram)
+    header = { 'ID_TELEGRAM' => id_telegram }
+    body = { precio: precio }.to_json
+    Faraday.post("#{@url}/publicaciones/#{id_publicacion}/oferta", body, header)
+  end
 end

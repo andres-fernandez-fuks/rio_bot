@@ -297,5 +297,16 @@ describe 'BotClient' do
       end
     end
   end
+
+  context 'Cuando el bot recibe /ofertar 1, 35000' do
+    before(:each) do
+      when_i_send_text(FAKE_TOKEN, '/ofertar 1, 35000')
+    end
+
+    context 'Y hay una publicacion con id 1' do
+      it 'Si esta activa devuelve que la oferta se creo correctamente' do
+      end
+    end
+  end
 end
 # rubocop:enable RSpec/ContextWording, RSpec/ExampleLength
