@@ -197,11 +197,12 @@ describe 'BotClient' do
     end
 
     it 'deberia no retornar nada' do
-      then_i_get_text(token, 'No hay publicaciones disponibles')
+      stub_req = then_i_get_text(token, 'No hay publicaciones disponibles')
       allow(respuesta_api).to receive(:empty?).and_return(true)
       allow(api_fiubak).to receive(:listar_publicaciones).and_return(respuesta_api)
       app = BotClient.new(token)
       app.run_once
+      expect(stub_req).to have_been_requested
     end
   end
 
@@ -210,15 +211,22 @@ describe 'BotClient' do
 
     before(:each) do
       when_i_send_text(token, '/listarPublicaciones')
-      then_i_get_text(token, 'Las publicaciones disponibles son las siguientes:')
     end
 
     it 'deberia retornarlas' do
-      allow(respuesta_api).to receive(:empty?).and_return(false)
-      allow(respuesta_api).to receive(:each).and_return('precio' => 30_000, 'Auto' => 'VW Suran 2017')
-      allow(api_fiubak).to receive(:listar_publicaciones).and_return(respuesta_api)
+      allow(api_fiubak).to receive(:listar_publicaciones).and_return([{ 'id' => '1',
+                                                                        'precio' => 500_000,
+                                                                        'auto' => { 'marca' => 'VW', 'modelo' => 'Suran', 'anio' => 2017 },
+                                                                        'estado' => 'Pendiente' }])
+      texto_esperado = "ID Publicacion: 1\nVehículo\nMarca: VW\nModelo: Suran\nAño: 2017\nPrecio: $500000\nGarantia Fiubak"
+
+      stub_req1 = then_i_get_text(token, 'Las publicaciones disponibles son las siguientes:')
+      stub_req2 = then_i_get_text(token, texto_esperado)
+      stub_req1.should
       app = BotClient.new(token)
       app.run_once
+      expect(stub_req1).to have_been_requested
+      expect(stub_req2).to have_been_requested
     end
   end
 
