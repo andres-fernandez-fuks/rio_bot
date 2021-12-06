@@ -317,6 +317,17 @@ describe 'BotClient' do
         expect(stub).to have_been_requested
       end
     end
+
+    context 'Y no hay una publicacion con id 1' do
+      it 'Entonces se retorna un texto de error' do
+        allow(respuesta_api).to receive(:status).and_return(403)
+        allow(api_fiubak).to receive(:ofertar).and_return(respuesta_api)
+        stub = then_i_get_text(FAKE_TOKEN, 'Error al procesar el comando')
+        app = BotClient.new(FAKE_TOKEN)
+        app.run_once
+        expect(stub).to have_been_requested
+      end
+    end
   end
 end
 # rubocop:enable RSpec/ContextWording, RSpec/ExampleLength

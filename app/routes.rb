@@ -136,9 +136,9 @@ class Routes
     monto =  args['monto']
     id_telegram = message.from.id.to_s
     respuesta = ApiFiubak.new(ENV['API_URL']).ofertar(id_publicacion, monto, id_telegram)
-    id_oferta = JSON(respuesta.body)['id']
-    monto_creado = JSON(respuesta.body)['monto']
     if respuesta.status == 200
+      id_oferta = JSON(respuesta.body)['id']
+      monto_creado = JSON(respuesta.body)['monto']
       bot.api.send_message(chat_id: message.chat.id, text: MensajeOfertaExitosa.crear(id_oferta, monto_creado))
     else
       bot.api.send_message(chat_id: message.chat.id, text: ErrorDeProcesamiento.crear)
