@@ -106,8 +106,9 @@ describe 'ApiFiubak' do
     id_oferta = 1
     stub = stub_request(:patch, "http://rio.api.com/ofertas/#{id_oferta}").with(body: { estado: 'rechazada' }.to_json).to_return status: 204
 
-    ApiFiubak.new('http://rio.api.com').rechazar_oferta(id_oferta)
+    resultado = ApiFiubak.new('http://rio.api.com').rechazar_oferta(id_oferta)
     expect(stub).to have_been_requested
+    expect(resultado.status).to eq 204
   end
 
   it 'Cuando se oferta por una publicacion activa' do # rubocop:disable RSpec/ExampleLength
@@ -116,7 +117,7 @@ describe 'ApiFiubak' do
            .with(headers: { 'ID_TELEGRAM' => id_telegram })
            .with(body: { precio: precio }.to_json)
            .to_return status: 201
-    ApiFiubak.new('http://rio.api.com').ofertar(id_publicacion, precio, id_telegram)
+    resultado = ApiFiubak.new('http://rio.api.com').ofertar(id_publicacion, precio, id_telegram)
     expect(stub).to have_been_requested
     expect(resultado.status).to eq 201
   end
@@ -127,7 +128,7 @@ describe 'ApiFiubak' do
            .with(headers: { 'ID_TELEGRAM' => id_telegram })
            .with(body: { precio: precio }.to_json)
            .to_return status: 409
-    ApiFiubak.new('http://rio.api.com').ofertar(id_publicacion, precio, id_telegram)
+    resultado = ApiFiubak.new('http://rio.api.com').ofertar(id_publicacion, precio, id_telegram)
     expect(stub).to have_been_requested
     expect(resultado.status).to eq 409
   end
