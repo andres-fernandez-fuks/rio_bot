@@ -118,6 +118,7 @@ describe 'ApiFiubak' do
            .to_return status: 201
     ApiFiubak.new('http://rio.api.com').ofertar(id_publicacion, precio, id_telegram)
     expect(stub).to have_been_requested
+    expect(resultado.status).to eq 201
   end
 
   it 'Cuando se oferta por una publicacion no activa devuelve un error' do # rubocop:disable RSpec/ExampleLength
@@ -128,6 +129,7 @@ describe 'ApiFiubak' do
            .to_return status: 409
     ApiFiubak.new('http://rio.api.com').ofertar(id_publicacion, precio, id_telegram)
     expect(stub).to have_been_requested
+    expect(resultado.status).to eq 409
   end
 
   it 'Cuando se oferta por una publicacion inexistente' do # rubocop:disable RSpec/ExampleLength
@@ -136,7 +138,8 @@ describe 'ApiFiubak' do
            .with(headers: { 'ID_TELEGRAM' => id_telegram })
            .with(body: { precio: precio }.to_json)
            .to_return status: 404
-    ApiFiubak.new('http://rio.api.com').ofertar(id_publicacion, precio, id_telegram)
+    resultado = ApiFiubak.new('http://rio.api.com').ofertar(id_publicacion, precio, id_telegram)
     expect(stub).to have_been_requested
+    expect(resultado.status).to eq 404
   end
 end
