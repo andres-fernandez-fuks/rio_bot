@@ -51,10 +51,7 @@ class ApiFiubak
     response = Faraday.get("#{@url}/publicaciones/#{id_publicacion}/ofertas", nil, header)
     return [] if response.body == '[]' # Por alguna razon JSON.parse falla en los tests al mockear la respuesta con body: []
 
-    array_response = JSON.parse(response.body)
-    array_response.map do |oferta|
-      JSON.parse(oferta)
-    end
+    JSON.parse(response.body)
   end
 
   def rechazar_oferta(id_oferta)

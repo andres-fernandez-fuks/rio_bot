@@ -3,7 +3,6 @@ require "#{File.dirname(__FILE__)}/../lib/version"
 require "#{File.dirname(__FILE__)}/opciones/opciones_usuario_registrado"
 require_relative 'api_fiubak'
 Dir[File.join(__dir__, 'mensaje', '*.rb')].each { |file| require file }
-
 Dir['mensaje'].each { |file| require_relative file }
 
 # rubocop: disable Metrics/ClassLength
@@ -115,7 +114,7 @@ class Routes
     else
       bot.api.send_message(chat_id: message.chat.id, text: 'Se han recibido las siguientes ofertas:')
       ofertas.map do |oferta|
-        bot.api.send_message(chat_id: message.chat.id, text: "Id: #{oferta['id']}\nMonto: $ #{oferta['monto']}\nOferente: #{oferta['oferente']}\nEstado: #{oferta['estado']['id']}")
+        bot.api.send_message(chat_id: message.chat.id, text: "Id: #{oferta['id']}\nMonto: $ #{oferta['monto']}\nOferente: #{oferta['oferente']}\nEstado: #{oferta['estado']}")
       end
     end
   rescue StandardError

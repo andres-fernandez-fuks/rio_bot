@@ -98,8 +98,8 @@ describe 'ApiFiubak' do
   end
 
   it 'Cuando consulto por las ofertas de una publicacion con una oferta, devuelvo arreglo con una oferta' do
-    stub_request(:get, 'http://rio.api.com/publicaciones/1/ofertas').to_return status: 200, body: [{ 'id': 123, 'monto': 30_000, 'oferente': 'fiubak', 'estado': { 'id': 'Pendiente' } }.to_json].to_json
-    expect(ApiFiubak.new('http://rio.api.com').listar_ofertas(1, FAKE_TOKEN)).to eq [{ 'id' => 123, 'monto' => 30_000, 'oferente' => 'fiubak', 'estado' => { 'id' => 'Pendiente' } }]
+    stub_request(:get, 'http://rio.api.com/publicaciones/1/ofertas').to_return status: 200, body: [{ 'id': 123, 'monto': 30_000, 'oferente': 'fiubak', 'estado': 'Pendiente' }].to_json
+    expect(ApiFiubak.new('http://rio.api.com').listar_ofertas(1, FAKE_TOKEN)).to eq [{ 'id' => 123, 'monto' => 30_000, 'oferente' => 'fiubak', 'estado' => 'Pendiente' }]
   end
 
   it 'Cuando se rechaza una oferta con id 1 se deberia enviar un PATCH a /ofertas/1 con body { estado: rechazada }' do

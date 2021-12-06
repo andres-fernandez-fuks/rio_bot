@@ -73,13 +73,14 @@ Estado: #{publicacion['estado']}"
   end
 
   def self.crear(publicacion)
-    "ID Publicacion: #{publicacion['id']}
+    msj = "ID Publicacion: #{publicacion['id']}
 Vehículo
 Marca: #{publicacion['auto']['marca']}
 Modelo: #{publicacion['auto']['modelo']}
 Año: #{publicacion['auto']['anio']}
-Precio: $#{publicacion['precio']}
-Garantia Fiubak"
+Precio: $#{publicacion['precio']}"
+    msj += "\nGarantia Fiubak" if publicacion['tipo'] == 'fiubak'
+    msj
   end
 end
 
