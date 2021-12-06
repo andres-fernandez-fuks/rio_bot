@@ -125,6 +125,20 @@ describe 'BotClient' do
 
       expect(stub_req).to have_been_requested
     end
+
+    context 'Si se registra otro usuario con el mismo mail' do
+      it 'Entonces registra un usuario en la API' do
+        allow(respuesta_api).to receive(:status).and_return(409)
+        allow(api_fiubak).to receive(:registrar_usuario).and_return(respuesta_api)
+
+        expect(api_fiubak).to receive(:registrar_usuario).once
+        stub_req1 = then_i_get_text(token, 'El registro no fue posible - Mail en uso')
+        stub_req1.should
+        app = BotClient.new(token)
+        app.run_once
+        expect(stub_req1).to have_been_requested
+      end
+    end
   end
 
   context 'Cuando el bot recibe /registrarAuto AAA123,Fiat,Uno,2001,800000' do

@@ -16,6 +16,7 @@ class Routes
     id_telegram = message.from.id
     respuesta = ApiFiubak.new(ENV['API_URL']).registrar_usuario(id_telegram, mail, nombre_usuario)
     bot.api.send_message(chat_id: message.chat.id, text: MensajeRegistroCorrecto.crear(nombre_usuario, mail)) if respuesta.status == 201
+    bot.api.send_message(chat_id: message.chat.id, text: MensajeRegistroMailRepetido.crear) if respuesta.status == 409
   end
 
   on_message_pattern %r{/registrarAuto (?<patente>.*),(?<marca>.*),(?<modelo>.*),(?<anio>.*),(?<precio>.*)} do |bot, message, args|
