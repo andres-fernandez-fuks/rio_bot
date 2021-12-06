@@ -118,7 +118,7 @@ describe 'BotClient' do
     end
 
     it 'Entonces devuelve mensaje de bienvenida' do
-      stub_req = then_i_get_text(token, 'Bienvenido Fulanito, tu email es fulanito@gmail.com')
+      stub_req = then_i_get_text(token, 'Bienvenido Fulanito, tu mail es fulanito@gmail.com')
 
       app = BotClient.new(token)
       app.run_once

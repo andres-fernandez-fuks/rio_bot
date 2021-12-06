@@ -15,7 +15,7 @@ end
 
 class MensajeRegistroCorrecto < Mensaje
   def self.crear(nombre_usuario, mail)
-    'Bienvenido ' + nombre_usuario + ', tu email es ' + mail
+    'Bienvenido ' + nombre_usuario + ', tu mail es ' + mail
   end
 end
 
