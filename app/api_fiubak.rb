@@ -56,4 +56,8 @@ class ApiFiubak
       JSON.parse(oferta)
     end
   end
+
+  def rechazar_oferta(id_oferta)
+    Faraday.patch("#{@url}/ofertas/#{id_oferta}", { estado: 'rechazada' }.to_json)
+  end
 end
