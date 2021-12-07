@@ -122,15 +122,16 @@ describe 'ApiFiubak' do
     expect(resultado.status).to eq 201
   end
 
-  it 'Cuando se oferta por una publicacion no activa devuelve un error' do # rubocop:disable RSpec/ExampleLength
+  it 'Cuando se oferta por una publicacion vendida devuelve un error' do # rubocop:disable RSpec/ExampleLength
     id_publicacion = 1
     stub = stub_request(:post, "http://rio.api.com/publicaciones/#{id_publicacion}/oferta")
            .with(headers: { 'ID_TELEGRAM' => id_telegram })
            .with(body: { precio: precio }.to_json)
-           .to_return status: 409
+           .to_return(status: 409, body: { error: 'La publicación ya fue vendida' }.to_json)
     resultado = ApiFiubak.new('http://rio.api.com').ofertar(id_publicacion, precio, id_telegram)
     expect(stub).to have_been_requested
     expect(resultado.status).to eq 409
+    expect(JSON(resultado.body)['error']).to eq 'La publicación ya fue vendida'
   end
 
   it 'Cuando se oferta por una publicacion inexistente' do # rubocop:disable RSpec/ExampleLength

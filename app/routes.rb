@@ -140,6 +140,8 @@ class Routes
       id_oferta = JSON(respuesta.body)['id']
       monto_creado = JSON(respuesta.body)['monto']
       bot.api.send_message(chat_id: message.chat.id, text: MensajeOfertaExitosa.crear(id_oferta, monto_creado))
+    elsif respuesta.status == 409
+      bot.api.send_message(chat_id: message.chat.id, text: MensajeOfertaFallida.crear)
     else
       bot.api.send_message(chat_id: message.chat.id, text: ErrorDeProcesamiento.crear)
     end

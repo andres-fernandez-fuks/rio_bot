@@ -317,10 +317,10 @@ describe 'BotClient' do
         expect(stub).to have_been_requested
       end
 
-      it 'Si no está activa, se retorna un texto de error' do
+      it 'Si esta vendida, se retorna un texto de error' do
         allow(respuesta_api).to receive(:status).and_return(409)
         allow(api_fiubak).to receive(:ofertar).and_return(respuesta_api)
-        stub = then_i_get_text(FAKE_TOKEN, 'Error al procesar el comando')
+        stub = then_i_get_text(FAKE_TOKEN, 'No se pudo realizar la oferta! La publicación sobre la que ofertó ya fue vendida')
         app = BotClient.new(FAKE_TOKEN)
         app.run_once
         expect(stub).to have_been_requested
