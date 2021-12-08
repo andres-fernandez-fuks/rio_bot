@@ -2,8 +2,12 @@ class Mensaje
 end
 
 class MensajeOfertaAceptada < Mensaje
-  def self.crear
-    'La oferta fue aceptada'
+  def self.crear(mail_oferente)
+    if mail_oferente
+      "La oferta fue aceptada. El mail del oferente es: #{mail_oferente}."
+    else
+      'La oferta fue aceptada.'
+    end
   end
 end
 

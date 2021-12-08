@@ -98,6 +98,7 @@ describe 'BotClient' do
     before(:each) do
       when_i_send_text(token, '/aceptarOferta 1')
       allow(respuesta_api).to receive(:status).and_return(200)
+      allow(respuesta_api).to receive(:body).and_return({}.to_json)
       allow(api_fiubak).to receive(:aceptar_oferta).and_return(respuesta_api)
     end
 
@@ -112,7 +113,7 @@ describe 'BotClient' do
     end
 
     it 'Deberia devolver mensaje "La oferta fue aceptada."' do
-      stub_req = then_i_get_text(token, 'La oferta fue aceptada')
+      stub_req = then_i_get_text(token, 'La oferta fue aceptada.')
       app = BotClient.new(token)
       app.run_once
       expect(stub_req).to have_been_requested
@@ -126,6 +127,22 @@ describe 'BotClient' do
 
       it 'Deberia devolver mensaje de error' do
         stub_req = then_i_get_text(token, 'Error al procesar el comando')
+        app = BotClient.new(token)
+        app.run_once
+        expect(stub_req).to have_been_requested
+      end
+    end
+
+    context 'Y hay es una oferta P2P' do # rubocop:disable RSpec/ContextWording:
+      let(:mail_oferente) { 'prueba@gmail.com' }
+
+      before(:each) do
+        allow(respuesta_api).to receive(:body).and_return({ mail: mail_oferente }.to_json)
+        allow(api_fiubak).to receive(:aceptar_oferta).and_return(respuesta_api)
+      end
+
+      it 'Debería devolver la oferta fue aceptada con el mail del oferente' do
+        stub_req = then_i_get_text(token, "La oferta fue aceptada. El mail del oferente es: #{mail_oferente}.")
         app = BotClient.new(token)
         app.run_once
         expect(stub_req).to have_been_requested

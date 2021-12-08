@@ -37,8 +37,9 @@ class Routes
   on_message_pattern %r{/aceptarOferta (?<id_oferta>.*)} do |bot, message, args|
     id_oferta = args['id_oferta']
     respuesta = ApiFiubak.new(ENV['API_URL']).aceptar_oferta(id_oferta)
+    mail_oferente = JSON(respuesta.body)['mail']
     if respuesta.status == 200
-      bot.api.send_message(chat_id: message.chat.id, text: MensajeOfertaAceptada.crear)
+      bot.api.send_message(chat_id: message.chat.id, text: MensajeOfertaAceptada.crear(mail_oferente))
     else
       bot.api.send_message(chat_id: message.chat.id, text: ErrorDeProcesamiento.crear)
     end
