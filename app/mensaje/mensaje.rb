@@ -67,22 +67,24 @@ end
 
 class MensajePublicacion < Mensaje
   def self.crear_mi(publicacion)
+    auto = JSON.parse(publicacion['auto'])
     "ID Publicacion: #{publicacion['id']}
-Vehículo
-Marca: #{publicacion['auto']['marca']}
-Modelo: #{publicacion['auto']['modelo']}
-Año: #{publicacion['auto']['anio']}
-Precio: $#{publicacion['precio']}
-Estado: #{publicacion['estado']}"
+    Vehículo
+    Marca: #{auto['marca']}
+    Modelo: #{auto['modelo']}
+    Año: #{auto['anio']}
+    Precio: $#{publicacion['precio']}
+    Estado: #{publicacion['estado']}"
   end
 
   def self.crear(publicacion)
+    auto = JSON.parse(publicacion['auto'])
     msj = "ID Publicacion: #{publicacion['id']}
-Vehículo
-Marca: #{publicacion['auto']['marca']}
-Modelo: #{publicacion['auto']['modelo']}
-Año: #{publicacion['auto']['anio']}
-Precio: $#{publicacion['precio']}"
+    Vehículo
+    Marca: #{auto['marca']}
+    Modelo: #{auto['modelo']}
+    Año: #{auto['anio']}
+    Precio: $#{publicacion['precio']}"
     msj += "\nGarantia Fiubak" if publicacion['tipo'] == 'fiubak'
     msj
   end

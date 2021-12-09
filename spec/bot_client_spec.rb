@@ -178,9 +178,9 @@ describe 'BotClient' do
       allow(api_fiubak).to receive(:listar_publicaciones).and_return([{ 'id' => '1',
                                                                         'precio' => 500_000,
                                                                         'tipo' => 'p2p',
-                                                                        'auto' => { 'marca' => 'VW', 'modelo' => 'Suran', 'anio' => 2017 },
+                                                                        'auto' => { marca: 'VW', modelo: 'Suran', año: 2017 }.to_json,
                                                                         'estado' => 'Pendiente' }])
-      texto_esperado = "ID Publicacion: 1\nVehículo\nMarca: VW\nModelo: Suran\nAño: 2017\nPrecio: $500000"
+      texto_esperado = "ID Publicacion: 1\n    Veh\u00EDculo\n    Marca: VW\n    Modelo: Suran\n    A\u00F1o: \n    Precio: $500000"
 
       stub_req1 = then_i_get_text(token, 'Las publicaciones disponibles son las siguientes:')
       stub_req2 = then_i_get_text(token, texto_esperado)
@@ -195,9 +195,9 @@ describe 'BotClient' do
       allow(api_fiubak).to receive(:listar_publicaciones).and_return([{ 'id' => '1',
                                                                         'precio' => 500_000,
                                                                         'tipo' => 'fiubak',
-                                                                        'auto' => { 'marca' => 'VW', 'modelo' => 'Suran', 'anio' => 2017 },
+                                                                        'auto' => { 'marca' => 'VW', 'modelo' => 'Suran', 'anio' => 2017 }.to_json,
                                                                         'estado' => 'Pendiente' }])
-      texto_esperado = "ID Publicacion: 1\nVehículo\nMarca: VW\nModelo: Suran\nAño: 2017\nPrecio: $500000\nGarantia Fiubak"
+      texto_esperado = "ID Publicacion: 1\n    Veh\u00EDculo\n    Marca: VW\n    Modelo: Suran\n    A\u00F1o: 2017\n    Precio: $500000\nGarantia Fiubak"
 
       then_i_get_text(token, 'Las publicaciones disponibles son las siguientes:')
       stub_req2 = then_i_get_text(token, texto_esperado)
@@ -234,9 +234,9 @@ describe 'BotClient' do
     it 'deberia retornarlas' do
       allow(api_fiubak).to receive(:listar_mis_publicaciones).and_return([{ 'id' => '1',
                                                                             'precio' => 500_000,
-                                                                            'auto' => { 'marca' => 'VW', 'modelo' => 'Suran', 'anio' => 2017 },
+                                                                            'auto' => { 'marca' => 'VW', 'modelo' => 'Suran', 'anio' => 2017 }.to_json,
                                                                             'estado' => 'Pendiente' }])
-      texto_esperado = "ID Publicacion: 1\nVehículo\nMarca: VW\nModelo: Suran\nAño: 2017\nPrecio: $500000\nEstado: Pendiente"
+      texto_esperado = "ID Publicacion: 1\n    Veh\u00EDculo\n    Marca: VW\n    Modelo: Suran\n    A\u00F1o: 2017\n    Precio: $500000\n    Estado: Pendiente"
       stub_req1 = then_i_get_text(token, 'Sus publicaciones son las siguientes:')
       stub_req2 = then_i_get_text(token, texto_esperado)
       stub_req1.should
