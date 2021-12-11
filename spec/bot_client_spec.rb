@@ -311,8 +311,6 @@ describe 'BotClient' do
 
     context 'Y hay una publicacion con id 1' do
       it 'Si esta activa devuelve que la oferta se creo correctamente' do
-        # allow(respuesta_api).to receive(:status).and_return(201)
-        # allow(respuesta_api).to receive(:body).and_return({ id: id_oferta, monto: monto }.to_json)
         allow(api_fiubak).to receive(:ofertar).and_return('id' => id_oferta, 'monto' => monto)
         stub = then_i_get_text(FAKE_TOKEN, "La oferta se realizó correctamente! \nLa oferta tiene id: #{id_oferta}, y monto $#{monto}")
         app = BotClient.new(FAKE_TOKEN)
