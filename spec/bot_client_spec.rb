@@ -10,6 +10,8 @@ describe 'BotClient' do
   let(:api_fiubak) { instance_spy('ApiFiubak') }
   let(:respuesta_api) { double }
 
+  FAKE_TOKEN = '123'.freeze
+
   before(:each) do
     allow(ApiFiubak).to receive(:new).and_return(api_fiubak)
   end
@@ -309,9 +311,9 @@ describe 'BotClient' do
 
     context 'Y hay una publicacion con id 1' do
       it 'Si esta activa devuelve que la oferta se creo correctamente' do
-        allow(respuesta_api).to receive(:status).and_return(201)
-        allow(respuesta_api).to receive(:body).and_return({ id: id_oferta, monto: monto }.to_json)
-        allow(api_fiubak).to receive(:ofertar).and_return(respuesta_api)
+        # allow(respuesta_api).to receive(:status).and_return(201)
+        # allow(respuesta_api).to receive(:body).and_return({ id: id_oferta, monto: monto }.to_json)
+        allow(api_fiubak).to receive(:ofertar).and_return('id' => id_oferta, 'monto' => monto)
         stub = then_i_get_text(FAKE_TOKEN, "La oferta se realizó correctamente! \nLa oferta tiene id: #{id_oferta}, y monto $#{monto}")
         app = BotClient.new(FAKE_TOKEN)
         app.run_once
@@ -319,8 +321,7 @@ describe 'BotClient' do
       end
 
       it 'Si esta vendida, se retorna un texto de error' do
-        allow(respuesta_api).to receive(:status).and_return(409)
-        allow(api_fiubak).to receive(:ofertar).and_return(respuesta_api)
+        allow(api_fiubak).to receive(:ofertar).and_raise(OfertaFallidaError)
         stub = then_i_get_text(FAKE_TOKEN, 'No se pudo realizar la oferta! La publicación sobre la que ofertó ya fue vendida')
         app = BotClient.new(FAKE_TOKEN)
         app.run_once
@@ -330,8 +331,7 @@ describe 'BotClient' do
 
     context 'Y no hay una publicacion con id 1' do
       it 'Entonces se retorna un texto de error' do
-        allow(respuesta_api).to receive(:status).and_return(403)
-        allow(api_fiubak).to receive(:ofertar).and_return(respuesta_api)
+        allow(api_fiubak).to receive(:ofertar).and_raise(ConsultaApiError)
         stub = then_i_get_text(FAKE_TOKEN, 'Error al procesar el comando')
         app = BotClient.new(FAKE_TOKEN)
         app.run_once

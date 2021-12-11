@@ -122,33 +122,27 @@ describe 'ApiFiubak' do
     stub = stub_request(:post, "http://rio.api.com/publicaciones/#{id_publicacion}/oferta")
            .with(headers: { 'ID_TELEGRAM' => id_telegram })
            .with(body: { precio: precio }.to_json)
-           .to_return status: 201
-    resultado = ApiFiubak.new('http://rio.api.com').ofertar(id_publicacion, precio, id_telegram)
+           .to_return status: 201, body: { id: 123, monto: 321 }.to_json
+    ApiFiubak.new('http://rio.api.com').ofertar(id_publicacion, precio, id_telegram)
     expect(stub).to have_been_requested
-    expect(resultado.status).to eq 201
   end
 
   it 'Cuando se oferta por una publicacion vendida devuelve un error' do # rubocop:disable RSpec/ExampleLength
     id_publicacion = 1
-    stub = stub_request(:post, "http://rio.api.com/publicaciones/#{id_publicacion}/oferta")
-           .with(headers: { 'ID_TELEGRAM' => id_telegram })
-           .with(body: { precio: precio }.to_json)
-           .to_return(status: 409, body: { error: 'La publicación ya fue vendida' }.to_json)
-    resultado = ApiFiubak.new('http://rio.api.com').ofertar(id_publicacion, precio, id_telegram)
-    expect(stub).to have_been_requested
-    expect(resultado.status).to eq 409
-    expect(JSON(resultado.body)['error']).to eq 'La publicación ya fue vendida'
+    stub_request(:post, "http://rio.api.com/publicaciones/#{id_publicacion}/oferta")
+      .with(headers: { 'ID_TELEGRAM' => id_telegram })
+      .with(body: { precio: precio }.to_json)
+      .to_return(status: 409, body: { error: 'La publicación ya fue vendida' }.to_json)
+    expect { ApiFiubak.new('http://rio.api.com').ofertar(id_publicacion, precio, id_telegram) }.to raise_error(OfertaFallidaError)
   end
 
   it 'Cuando se oferta por una publicacion inexistente' do # rubocop:disable RSpec/ExampleLength
     id_publicacion = 1
-    stub = stub_request(:post, "http://rio.api.com/publicaciones/#{id_publicacion}/oferta")
-           .with(headers: { 'ID_TELEGRAM' => id_telegram })
-           .with(body: { precio: precio }.to_json)
-           .to_return status: 404
-    resultado = ApiFiubak.new('http://rio.api.com').ofertar(id_publicacion, precio, id_telegram)
-    expect(stub).to have_been_requested
-    expect(resultado.status).to eq 404
+    stub_request(:post, "http://rio.api.com/publicaciones/#{id_publicacion}/oferta")
+      .with(headers: { 'ID_TELEGRAM' => id_telegram })
+      .with(body: { precio: precio }.to_json)
+      .to_return status: 404
+    expect { ApiFiubak.new('http://rio.api.com').ofertar(id_publicacion, precio, id_telegram) }.to raise_error(ConsultaApiError)
   end
 
   it 'Reservar una publicacion la reserva correctamente' do

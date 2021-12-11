@@ -6,3 +6,6 @@ end
 
 class ConsultaApiError < StandardError
 end
+
+class OfertaFallidaError < StandardError
+end

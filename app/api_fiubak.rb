@@ -69,7 +69,11 @@ class ApiFiubak
   def ofertar(id_publicacion, precio, id_telegram)
     header = { 'ID_TELEGRAM' => id_telegram }
     body = { precio: precio }.to_json
-    Faraday.post("#{@url}/publicaciones/#{id_publicacion}/oferta", body, header)
+    respuesta = Faraday.post("#{@url}/publicaciones/#{id_publicacion}/oferta", body, header)
+    raise OfertaFallidaError if respuesta.status == 409
+    raise ConsultaApiError if respuesta.status != 201
+
+    JSON(respuesta.body)
   end
 
   def reservar(id_publicacion)

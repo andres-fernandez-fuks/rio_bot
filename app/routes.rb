@@ -123,15 +123,13 @@ class Routes
     monto =  args['monto']
     id_telegram = message.from.id.to_s
     respuesta = ApiFiubak.new(ENV['API_URL']).ofertar(id_publicacion, monto, id_telegram)
-    if respuesta.status == 201
-      id_oferta = JSON(respuesta.body)['id']
-      monto_creado = JSON(respuesta.body)['monto']
-      bot.api.send_message(chat_id: message.chat.id, text: MensajeOfertaExitosa.crear(id_oferta, monto_creado))
-    elsif respuesta.status == 409
-      bot.api.send_message(chat_id: message.chat.id, text: MensajeOfertaFallida.crear)
-    else
-      bot.api.send_message(chat_id: message.chat.id, text: ErrorDeProcesamiento.crear)
-    end
+    id_oferta = respuesta['id']
+    monto_creado = respuesta['monto']
+    bot.api.send_message(chat_id: message.chat.id, text: MensajeOfertaExitosa.crear(id_oferta, monto_creado))
+  rescue OfertaFallidaError
+    bot.api.send_message(chat_id: message.chat.id, text: MensajeOfertaFallida.crear)
+  rescue ConsultaApiError
+    bot.api.send_message(chat_id: message.chat.id, text: ErrorDeProcesamiento.crear)
   end
 end
 # rubocop: enable Metrics/ClassLength
