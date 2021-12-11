@@ -18,3 +18,9 @@ class ErrorUsuarioNoRegistrado < Error
     'El usuario con id ' + id_usuario + ' no se encuentra registrado'
   end
 end
+
+class ErrorReserva < Error
+  def self.crear
+    'No se pudo realizar la reserva. No se encontró la publicación'
+  end
+end
