@@ -41,7 +41,7 @@ describe 'ApiFiubak' do
     stub_request(:get, 'http://rio.api.com/usuarios/yo')
       .with(headers: { 'ID_TELEGRAM' => id_telegram })
       .to_return status: 200
-    usuario_registrado = ApiFiubak.new('http://rio.api.com').esta_registrado?(id_telegram)
+    usuario_registrado = ApiFiubak.new('http://rio.api.com').este_usuario_esta_registrado?(id_telegram)
     expect(usuario_registrado).to eq true
   end
 
@@ -49,7 +49,7 @@ describe 'ApiFiubak' do
     stub_request(:get, 'http://rio.api.com/usuarios/yo')
       .with(headers: { 'ID_TELEGRAM' => id_telegram })
       .to_return status: 404
-    usuario_registrado = ApiFiubak.new('http://rio.api.com').esta_registrado?(id_telegram)
+    usuario_registrado = ApiFiubak.new('http://rio.api.com').este_usuario_esta_registrado?(id_telegram)
     expect(usuario_registrado).to eq false
   end
 

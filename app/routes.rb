@@ -45,16 +45,15 @@ class Routes
 
   on_message '/help' do |bot, message|
     id_telegram = message.from.id.to_s
-    usuario_registrado = ApiFiubak.new(ENV['API_URL']).esta_registrado?(id_telegram)
-    if !usuario_registrado
-      bot.api.send_message(chat_id: message.chat.id, text: MensajeAyudaUsuarioSinRegistrar.crear)
-    else
+    if ApiFiubak.new(ENV['API_URL']).este_usuario_esta_registrado?(id_telegram)
       boton = Opciones::OpcionUsuarioRegistrado.all.map do |opcion|
         Telegram::Bot::Types::InlineKeyboardButton.new(text: opcion.nombre, callback_data: opcion.id.to_s)
       end
       markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: boton)
 
       bot.api.send_message(chat_id: message.chat.id, text: MensajeAyudaUsuarioRegistrado.crear, reply_markup: markup)
+    else
+      bot.api.send_message(chat_id: message.chat.id, text: MensajeAyudaUsuarioSinRegistrar.crear)
     end
   end
 
