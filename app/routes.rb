@@ -82,9 +82,7 @@ class Routes
   on_message '/misPublicaciones' do |bot, message|
     id_telegram = message.from.id.to_s
     publicaciones = ApiFiubak.new(ENV['API_URL']).listar_mis_publicaciones(id_telegram)
-    if !publicaciones
-      bot.api.send_message(chat_id: message.chat.id, text: ErrorUsuarioNoRegistrado.crear(id_telegram))
-    elsif publicaciones.empty?
+    if publicaciones.empty?
       bot.api.send_message(chat_id: message.chat.id, text: MensajeSinPublicacionesPropias.crear)
     else
       bot.api.send_message(chat_id: message.chat.id, text: MensajeIntroduccionPublicacionesPropias.crear)
@@ -92,6 +90,8 @@ class Routes
         bot.api.send_message(chat_id: message.chat.id, text: MensajePublicacion.crear_mi(publicacion))
       end
     end
+  rescue UsuarioNoRegistradoError
+    bot.api.send_message(chat_id: message.chat.id, text: ErrorUsuarioNoRegistrado.crear(id_telegram))
   end
 
   on_message_pattern %r{/ofertas (?<id_publicacion>.*)} do |bot, message, args|
