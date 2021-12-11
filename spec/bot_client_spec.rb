@@ -337,5 +337,20 @@ describe 'BotClient' do
       end
     end
   end
+
+  context 'Cuando el bot recibe /reservar 1' do
+    before(:each) do
+      when_i_send_text(FAKE_TOKEN, '/reservar 1')
+    end
+
+    it 'Entonces reserva correctamente' do
+      allow(respuesta_api).to receive(:status).and_return(200)
+      allow(api_fiubak).to receive(:reservar).and_return(nil)
+      stub = then_i_get_text(FAKE_TOKEN, 'Se ha realizado la reserva de la publicación 1')
+      app = BotClient.new(FAKE_TOKEN)
+      app.run_once
+      expect(stub).to have_been_requested
+    end
+  end
 end
 # rubocop:enable RSpec/ContextWording, RSpec/ExampleLength

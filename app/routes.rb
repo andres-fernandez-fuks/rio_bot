@@ -130,5 +130,13 @@ class Routes
   rescue ConsultaApiError
     bot.api.send_message(chat_id: message.chat.id, text: ErrorDeProcesamiento.crear)
   end
+
+  on_message_pattern %r{/reservar (?<id_publicacion>.*)} do |bot, message, args|
+    id_publicacion = args['id_publicacion']
+    ApiFiubak.new(ENV['API_URL']).reservar(id_publicacion)
+    bot.api.send_message(chat_id: message.chat.id, text: MensajeReservaExitosa.crear(id_publicacion))
+  rescue StandardError
+    bot.api.send_message(chat_id: message.chat.id, text: ErrorDeProcesamiento.crear)
+  end
 end
 # rubocop: enable Metrics/ClassLength

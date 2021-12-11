@@ -113,3 +113,9 @@ class MensajeOfertaFallida < Mensaje
     'No se pudo realizar la oferta! La publicación sobre la que ofertó ya fue vendida'
   end
 end
+
+class MensajeReservaExitosa < Mensaje
+  def self.crear(id_publicacion)
+    "Se ha realizado la reserva de la publicación #{id_publicacion}"
+  end
+end
