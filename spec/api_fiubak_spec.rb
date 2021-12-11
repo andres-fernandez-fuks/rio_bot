@@ -113,9 +113,8 @@ describe 'ApiFiubak' do
     id_oferta = 1
     stub = stub_request(:patch, "http://rio.api.com/ofertas/#{id_oferta}").with(body: { estado: 'rechazada' }.to_json).to_return status: 204
 
-    resultado = ApiFiubak.new('http://rio.api.com').rechazar_oferta(id_oferta)
+    ApiFiubak.new('http://rio.api.com').rechazar_oferta(id_oferta)
     expect(stub).to have_been_requested
-    expect(resultado.status).to eq 204
   end
 
   it 'Cuando se oferta por una publicacion activa' do # rubocop:disable RSpec/ExampleLength

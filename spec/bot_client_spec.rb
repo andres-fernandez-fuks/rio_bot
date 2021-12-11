@@ -287,8 +287,7 @@ describe 'BotClient' do
 
     context 'Y hay un error en el llamado a la API' do # rubocop:disable RSpec/ContextWording:
       before(:each) do
-        allow(respuesta_api).to receive(:status).and_return(404)
-        allow(api_fiubak).to receive(:rechazar_oferta).and_return(respuesta_api)
+        allow(api_fiubak).to receive(:rechazar_oferta).and_raise(ConsultaApiError)
       end
 
       it 'Deberia devolver mensaje de error' do

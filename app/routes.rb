@@ -112,12 +112,10 @@ class Routes
 
   on_message_pattern %r{/rechazarOferta (?<id_oferta>.*)} do |bot, message, args|
     id_oferta = args['id_oferta']
-    respuesta = ApiFiubak.new(ENV['API_URL']).rechazar_oferta(id_oferta)
-    if respuesta.status == 200
-      bot.api.send_message(chat_id: message.chat.id, text: MensajeOfertaRechazada.crear)
-    else
-      bot.api.send_message(chat_id: message.chat.id, text: ErrorDeProcesamiento.crear)
-    end
+    ApiFiubak.new(ENV['API_URL']).rechazar_oferta(id_oferta)
+    bot.api.send_message(chat_id: message.chat.id, text: MensajeOfertaRechazada.crear)
+  rescue ConsultaApiError
+    bot.api.send_message(chat_id: message.chat.id, text: ErrorDeProcesamiento.crear)
   end
 
   on_message_pattern %r{/ofertar (?<id_publicacion>.*),(?<monto>.*)} do |bot, message, args|
