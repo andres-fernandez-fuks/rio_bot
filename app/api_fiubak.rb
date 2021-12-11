@@ -34,7 +34,10 @@ class ApiFiubak
   end
 
   def aceptar_oferta(id_oferta)
-    Faraday.patch("#{@url}/ofertas/#{id_oferta}", { estado: 'aceptada' }.to_json)
+    respuesta = Faraday.patch("#{@url}/ofertas/#{id_oferta}", { estado: 'aceptada' }.to_json)
+    raise ConsultaApiError if respuesta.status != 200
+
+    JSON(respuesta.body)
   end
 
   def listar_publicaciones

@@ -90,26 +90,17 @@ describe 'BotClient' do
 
   context 'Cuando el bot recibe /aceptarOferta 1' do
     let(:token) { 123_456 }
+    let(:mail) { 'test@test.com' }
 
     before(:each) do
       when_i_send_text(token, '/aceptarOferta 1')
-      allow(respuesta_api).to receive(:status).and_return(200)
-      allow(respuesta_api).to receive(:body).and_return({}.to_json)
-      allow(api_fiubak).to receive(:aceptar_oferta).and_return(respuesta_api)
-    end
-
-    it 'Deberia aceptar la oferta en la API' do
-      stub_request(:post, "https://api.telegram.org/bot#{token}/sendMessage")
-        .to_return(status: 200, body: {}.to_json, headers: {})
-
-      expect(api_fiubak).to receive(:aceptar_oferta).with('1').once
-
-      app = BotClient.new(token)
-      app.run_once
+      # allow(respuesta_api).to receive(:status).and_return(200)
+      # allow(respuesta_api).to receive(:body).and_return({}.to_json)
     end
 
     it 'Deberia devolver mensaje "La oferta fue aceptada."' do
-      stub_req = then_i_get_text(token, 'La oferta fue aceptada.')
+      allow(api_fiubak).to receive(:aceptar_oferta).and_return('mail' => mail)
+      stub_req = then_i_get_text(token, "La oferta fue aceptada. El mail del oferente es: #{mail}.")
       app = BotClient.new(token)
       app.run_once
       expect(stub_req).to have_been_requested
@@ -117,8 +108,7 @@ describe 'BotClient' do
 
     context 'Y hay un error en el llamado a la API' do # rubocop:disable RSpec/ContextWording:
       before(:each) do
-        allow(respuesta_api).to receive(:status).and_return(404)
-        allow(api_fiubak).to receive(:aceptar_oferta).and_return(respuesta_api)
+        allow(api_fiubak).to receive(:aceptar_oferta).and_raise(ConsultaApiError)
       end
 
       it 'Deberia devolver mensaje de error' do
@@ -133,8 +123,7 @@ describe 'BotClient' do
       let(:mail_oferente) { 'prueba@gmail.com' }
 
       before(:each) do
-        allow(respuesta_api).to receive(:body).and_return({ mail: mail_oferente }.to_json)
-        allow(api_fiubak).to receive(:aceptar_oferta).and_return(respuesta_api)
+        allow(api_fiubak).to receive(:aceptar_oferta).and_return('mail' => mail_oferente)
       end
 
       it 'Debería devolver la oferta fue aceptada con el mail del oferente' do
