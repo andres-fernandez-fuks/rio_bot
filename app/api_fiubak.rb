@@ -77,6 +77,8 @@ class ApiFiubak
   end
 
   def reservar(id_publicacion)
-    Faraday.post("#{@url}/publicaciones/#{id_publicacion}/reservas", nil, nil)
+    respuesta = Faraday.post("#{@url}/publicaciones/#{id_publicacion}/reservas", nil, nil)
+    raise PublicacionNoEncontradaError if respuesta.status == 404
+    raise ConsultaApiError if respuesta.status != 200
   end
 end
