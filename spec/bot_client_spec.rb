@@ -72,22 +72,19 @@ describe 'BotClient' do
 
   context 'Cuando el bot recibe /registrarAuto AAA123,Fiat,Uno,2001,800000' do
     let(:token) { 123_456 }
+    let(:id_publicacion) { 123 }
 
     before(:each) do
       when_i_send_text(token, '/registrarAuto AAA123,Fiat,Uno,2001,800000')
-      allow(respuesta_api).to receive(:status).and_return(201)
-      allow(respuesta_api).to receive(:body).and_return(id: '1')
-      allow(api_fiubak).to receive(:registrar_auto).and_return(respuesta_api)
     end
 
     it 'Intenta crear una publicacion en la api' do
-      stub_request(:post, "https://api.telegram.org/bot#{token}/sendMessage")
-        .to_return(status: 200, body: {}.to_json, headers: {})
+      allow(api_fiubak).to receive(:registrar_auto).and_return('id' => id_publicacion)
 
-      expect(api_fiubak).to receive(:registrar_auto).once
-
+      stub_req = then_i_get_text(token, "Gracias por ingresar su auto, lo cotizaremos y le informaremos a la brevedad, el id unico es #{id_publicacion}")
       app = BotClient.new(token)
       app.run_once
+      expect(stub_req).to have_been_requested
     end
   end
 

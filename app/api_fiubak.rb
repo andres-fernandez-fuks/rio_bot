@@ -17,7 +17,10 @@ class ApiFiubak
 
   def registrar_auto(patente, marca, modelo, anio, precio, id_telegram) # rubocop:disable Metrics/ParameterLists
     body = { id_telegram: id_telegram, patente: patente, marca: marca, modelo: modelo, anio: anio, precio: precio }.to_json
-    Faraday.post("#{@url}/publicaciones", body)
+    respuesta = Faraday.post("#{@url}/publicaciones", body)
+    raise UsuarioNoRegistradoError if respuesta.status == 401
+
+    JSON(respuesta.body)
   end
 
   def consultar_usuario(id_telegram)

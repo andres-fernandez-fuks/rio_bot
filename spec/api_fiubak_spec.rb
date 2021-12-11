@@ -61,7 +61,7 @@ describe 'ApiFiubak' do
   it 'registrar auto deberia enviar POST a /publicaciones con patente, marca, modelo, anio, precio y id de telegram' do
     stub = stub_request(:post, 'http://rio.api.com/publicaciones')
            .with(body: { 'id_telegram': id_telegram, 'patente': patente, 'marca': marca, 'modelo': modelo, 'anio': anio, 'precio': precio }.to_json)
-           .to_return status: 201
+           .to_return status: 201, body: { id_publicacion: 123 }.to_json
     ApiFiubak.new('http://rio.api.com').registrar_auto(patente, marca, modelo, anio, precio, id_telegram)
     expect(stub).to have_been_requested
   end
