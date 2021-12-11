@@ -153,11 +153,19 @@ describe 'ApiFiubak' do
     expect(stub).to have_been_requested
   end
 
-  it 'Si hay un error al reservar levanta un error' do
+  it 'Si no se encuentra la publicacion al reservar levanta un error' do
     id_publicacion = 1
     stub = stub_request(:post, "http://rio.api.com/publicaciones/#{id_publicacion}/reservas")
            .to_return status: 404
     expect { ApiFiubak.new('http://rio.api.com').reservar(id_publicacion) }.to raise_error(PublicacionNoEncontradaError)
+    expect(stub).to have_been_requested
+  end
+
+  it 'Si hay otro error al reservar levanta un error' do
+    id_publicacion = 1
+    stub = stub_request(:post, "http://rio.api.com/publicaciones/#{id_publicacion}/reservas")
+           .to_return status: 500
+    expect { ApiFiubak.new('http://rio.api.com').reservar(id_publicacion) }.to raise_error(ConsultaApiError)
     expect(stub).to have_been_requested
   end
 end
