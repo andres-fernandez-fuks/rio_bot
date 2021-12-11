@@ -150,4 +150,12 @@ describe 'ApiFiubak' do
     expect(stub).to have_been_requested
     expect(resultado.status).to eq 404
   end
+
+  it 'Reservar una publicacion la reserva correctamente' do
+    id_publicacion = 1
+    stub = stub_request(:post, "http://rio.api.com/publicaciones/#{id_publicacion}/reservas")
+           .to_return status: 200
+    ApiFiubak.new('http://rio.api.com').reservar(id_publicacion)
+    expect(stub).to have_been_requested
+  end
 end

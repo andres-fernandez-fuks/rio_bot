@@ -71,4 +71,8 @@ class ApiFiubak
     body = { precio: precio }.to_json
     Faraday.post("#{@url}/publicaciones/#{id_publicacion}/oferta", body, header)
   end
+
+  def reservar(id_publicacion)
+    Faraday.post("#{@url}/publicaciones/#{id_publicacion}/reservas", nil, nil)
+  end
 end
