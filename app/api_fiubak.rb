@@ -63,7 +63,7 @@ class ApiFiubak
 
   def rechazar_oferta(id_oferta)
     respuesta = Faraday.patch("#{@url}/ofertas/#{id_oferta}", { estado: 'rechazada' }.to_json)
-    raise ConsultaApiError if respuesta.status != 204
+    raise ConsultaApiError if respuesta.status != 200
   end
 
   def ofertar(id_publicacion, precio, id_telegram)
