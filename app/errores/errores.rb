@@ -1,0 +1,2 @@
+class RegistroUsuarioError < StandardError
+end

@@ -22,6 +22,13 @@ describe 'ApiFiubak' do
     expect(stub).to have_been_requested
   end
 
+  it 'registrar usuario repetido deberia enviar POST a /usuarios con id de telegram, mail y nombre y lanzar exepcion' do
+    stub_request(:post, 'http://rio.api.com/usuarios')
+      .with(body: { 'id_telegram': id_telegram, 'mail': mail, 'nombre': nombre }.to_json)
+      .to_return status: 409
+    expect { ApiFiubak.new('http://rio.api.com').registrar_usuario(id_telegram, mail, nombre) }.to raise_error(RegistroUsuarioError)
+  end
+
   it 'consultar por un usuario deberia enviar GET a /user con id de telegram, mail y nombre' do
     stub = stub_request(:get, 'http://rio.api.com/usuarios/yo')
            .with(headers: { 'ID_TELEGRAM' => id_telegram })

@@ -2,6 +2,7 @@ require "#{File.dirname(__FILE__)}/../lib/routing"
 require "#{File.dirname(__FILE__)}/../lib/version"
 require "#{File.dirname(__FILE__)}/opciones/opciones_usuario_registrado"
 require_relative 'api_fiubak'
+require_relative './errores/errores.rb'
 Dir[File.join(__dir__, 'mensaje', '*.rb')].each { |file| require file }
 Dir['mensaje'].each { |file| require_relative file }
 
@@ -13,9 +14,10 @@ class Routes
     nombre_usuario = args['nombre_usuario']
     mail = args['mail']
     id_telegram = message.from.id
-    respuesta = ApiFiubak.new(ENV['API_URL']).registrar_usuario(id_telegram, mail, nombre_usuario)
-    bot.api.send_message(chat_id: message.chat.id, text: MensajeRegistroCorrecto.crear(nombre_usuario, mail)) if respuesta.status == 201
-    bot.api.send_message(chat_id: message.chat.id, text: MensajeRegistroMailRepetido.crear) if respuesta.status == 409
+    ApiFiubak.new(ENV['API_URL']).registrar_usuario(id_telegram, mail, nombre_usuario)
+    bot.api.send_message(chat_id: message.chat.id, text: MensajeRegistroCorrecto.crear(nombre_usuario, mail))
+  rescue RegistroUsuarioError
+    bot.api.send_message(chat_id: message.chat.id, text: MensajeRegistroMailRepetido.crear)
   end
 
   on_message_pattern %r{/registrarAuto (?<patente>.*),(?<marca>.*),(?<modelo>.*),(?<anio>.*),(?<precio>.*)} do |bot, message, args|

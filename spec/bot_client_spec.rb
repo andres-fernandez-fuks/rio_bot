@@ -57,9 +57,8 @@ describe 'BotClient' do
     end
 
     context 'Si se registra otro usuario con el mismo mail' do
-      it 'Entonces registra un usuario en la API' do
-        allow(respuesta_api).to receive(:status).and_return(409)
-        allow(api_fiubak).to receive(:registrar_usuario).and_return(respuesta_api)
+      it 'Entonces no se registra un usuario en la API' do
+        allow(api_fiubak).to receive(:registrar_usuario).and_raise(RegistroUsuarioError)
 
         expect(api_fiubak).to receive(:registrar_usuario).once
         stub_req1 = then_i_get_text(token, 'El registro no fue posible - Mail en uso')

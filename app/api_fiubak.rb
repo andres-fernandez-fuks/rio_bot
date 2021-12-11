@@ -11,7 +11,8 @@ class ApiFiubak
 
   def registrar_usuario(id_telegram, mail, nombre)
     body = { id_telegram: id_telegram, mail: mail, nombre: nombre }.to_json
-    Faraday.post("#{@url}/usuarios", body)
+    respuesta = Faraday.post("#{@url}/usuarios", body)
+    raise RegistroUsuarioError if respuesta.status == 409
   end
 
   def registrar_auto(patente, marca, modelo, anio, precio, id_telegram) # rubocop:disable Metrics/ParameterLists
