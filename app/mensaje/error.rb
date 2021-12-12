@@ -24,3 +24,9 @@ class ErrorReserva < Error
     'No se pudo realizar la reserva. No se encontró la publicación'
   end
 end
+
+class ErrorPatenteYaRegistrada < Error
+  def self.crear(patente)
+    'La patente ' + patente + ' ya se encuentra registrada en una publicación activa'
+  end
+end

@@ -19,6 +19,7 @@ class ApiFiubak
     body = { id_telegram: id_telegram, patente: patente, marca: marca, modelo: modelo, anio: anio, precio: precio }.to_json
     respuesta = Faraday.post("#{@url}/publicaciones", body)
     raise UsuarioNoRegistradoError if respuesta.status == 401
+    raise PatenteYaRegistradaError if respuesta.status == 409
 
     JSON(respuesta.body)
   end

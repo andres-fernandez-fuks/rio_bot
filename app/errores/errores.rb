@@ -12,3 +12,6 @@ end
 
 class OfertaFallidaError < StandardError
 end
+
+class PatenteYaRegistradaError < StandardError
+end

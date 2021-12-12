@@ -69,7 +69,7 @@ def then_i_get_keyboard_message(token, message_text)
   stub_request(:post, "https://api.telegram.org/bot#{token}/sendMessage")
     .with(
       body: { 'chat_id' => '141733544',
-              'reply_markup' => '{"inline_keyboard":[[{"text":"Cómo registrar mi auto","callback_data":"1"}],[{"text":"Cómo buscar publicaciones","callback_data":"2"}],[{"text":"Cómo aceptar una oferta","callback_data":"3"}]]}',
+              'reply_markup' => '{"inline_keyboard":[[{"text":"Cómo registrar mi auto","callback_data":"1"}],[{"text":"Cómo ver mis publicaciones","callback_data":"2"}],[{"text":"Cómo buscar publicaciones","callback_data":"3"}],[{"text":"Cómo ver las ofertas de una publicación propia","callback_data":"4"}],[{"text":"Cómo aceptar o rechazar una oferta","callback_data":"5"}],[{"text":"Cómo realizar una oferta","callback_data":"6"}],[{"text":"Cómo comprar un auto de FIUBAK","callback_data":"7"}]]}',
               'text' => message_text }
     )
     .to_return(status: 200, body: body.to_json, headers: {})
